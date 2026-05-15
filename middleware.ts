@@ -1,0 +1,17 @@
+import { type NextRequest, NextResponse } from 'next/server';
+import { updateSession } from '@/lib/supabase/middleware';
+
+export async function middleware(request: NextRequest) {
+  if (
+    request.nextUrl.pathname.startsWith('/admin') &&
+    process.env.NEXT_PUBLIC_SUPABASE_URL
+  ) {
+    // Admin routes require auth in production
+    return await updateSession(request);
+  }
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: ['/admin/:path*'],
+};
