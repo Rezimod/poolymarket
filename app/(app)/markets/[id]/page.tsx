@@ -16,11 +16,14 @@ import { MarketComments } from '@/components/markets/MarketComments';
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner';
 import { MOCK_MARKETS, MOCK_TRADES, getMockPriceHistory, MOCK_COMMENTS } from '@/lib/data/mock';
 import { formatVolume, formatDate } from '@/lib/utils/format';
+import { useLocale } from '@/lib/hooks/useLocale';
 import { useMarketStore } from '@/stores/marketStore';
 import type { Market } from '@/types';
+import { cn } from '@/lib/utils/cn';
 
 export default function MarketDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const { locale, marketTitle, isKa, t } = useLocale();
   const { activeMarket, setActiveMarket, recentTrades, addTrade } = useMarketStore();
   const [criteriaOpen, setCriteriaOpen] = useState(false);
   const [market, setMarket] = useState<Market | null>(null);
@@ -47,7 +50,7 @@ export default function MarketDetailPage() {
     );
   }
 
-  const title = displayMarket.title;
+  const title = marketTitle(displayMarket);
 
   const handleTrade = async () => {
     addTrade({
@@ -76,22 +79,31 @@ export default function MarketDetailPage() {
           {/* Left column */}
           <div className="lg:col-span-3 space-y-4">
             {displayMarket.category && <CategoryBadge category={displayMarket.category} />}
-            <h1 className="font-sora text-2xl md:text-3xl font-bold text-white leading-tight">
+            <h1
+              className={cn(
+                'font-sora text-2xl md:text-3xl font-bold text-white leading-tight',
+                isKa && 'font-georgian'
+              )}
+            >
               {title}
             </h1>
 
             <div className="glass-card p-6">
               <div className="flex items-end justify-between mb-4">
                 <div>
-                  <p className="text-sm text-slate-500 mb-1">Current probability</p>
+                  <p className="text-sm text-slate-500 mb-1">{t('chance')}</p>
                   <p className="font-sora text-5xl font-bold text-yes">
                     <CountUp value={displayMarket.yes_price * 100} decimals={0} />
-                    <span className="text-2xl ml-1">YES</span>
+                    <span className="text-2xl ml-1">{t('yesLabel')}</span>
                   </p>
                 </div>
                 <div className="text-right text-sm text-slate-400 space-y-1">
-                  <p>Vol: {formatVolume(displayMarket.total_volume)}</p>
-                  <p>Ends: {formatDate(displayMarket.end_date)}</p>
+                  <p>
+                    {isKa ? 'მოცულობა' : 'Vol'}: {formatVolume(displayMarket.total_volume)}
+                  </p>
+                  <p>
+                    {isKa ? 'ვადა' : 'Ends'}: {formatDate(displayMarket.end_date, locale)}
+                  </p>
                 </div>
               </div>
               <ProbabilityBar yesPrice={displayMarket.yes_price} size="lg" />
@@ -143,7 +155,7 @@ export default function MarketDetailPage() {
               {[
                 { label: 'Volume', value: formatVolume(displayMarket.total_volume) },
                 { label: 'Liquidity', value: formatVolume(displayMarket.liquidity) },
-                { label: 'End Date', value: formatDate(displayMarket.end_date) },
+                { label: isKa ? 'ვადა' : 'End Date', value: formatDate(displayMarket.end_date, locale) },
                 { label: 'Status', value: displayMarket.status },
               ].map(({ label, value }) => (
                 <div key={label}>

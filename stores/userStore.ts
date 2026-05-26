@@ -1,14 +1,15 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Profile } from '@/types';
+import type { Locale } from '@/lib/i18n/messages';
 import { MOCK_USER } from '@/lib/data/mock';
 
 interface UserState {
   profile: Profile | null;
-  /** UI is English-only; Georgian market titles use NPLG lexicon when exposed via API */
-  locale: 'en';
+  locale: Locale;
   setProfile: (profile: Profile | null) => void;
   updateBalance: (amount: number) => void;
+  setLocale: (locale: Locale) => void;
   initDemoUser: () => void;
 }
 
@@ -24,11 +25,12 @@ export const useUserStore = create<UserState>()(
             ? { ...state.profile, lari_points: state.profile.lari_points + amount }
             : null,
         })),
+      setLocale: (locale) => set({ locale }),
       initDemoUser: () => set({ profile: MOCK_USER }),
     }),
     {
       name: 'poolymarket-user',
-      partialize: (state) => ({ profile: state.profile }),
+      partialize: (state) => ({ profile: state.profile, locale: state.locale }),
     }
   )
 );

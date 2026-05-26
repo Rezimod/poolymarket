@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, Bell } from 'lucide-react';
+import { Search, Globe, Bell } from 'lucide-react';
 import { useUserStore } from '@/stores/userStore';
+import { useLocale } from '@/lib/hooks/useLocale';
 import { Button } from '@/components/ui/Button';
 import { formatLariPoints } from '@/lib/utils/format';
 
@@ -14,6 +15,7 @@ interface TopBarProps {
 export function TopBar({ onSearch }: TopBarProps) {
   const router = useRouter();
   const { profile, initDemoUser } = useUserStore();
+  const { locale, setLocale, t } = useLocale();
   const [query, setQuery] = useState('');
 
   const handleSearch = (e: React.FormEvent) => {
@@ -33,14 +35,24 @@ export function TopBar({ onSearch }: TopBarProps) {
               setQuery(e.target.value);
               onSearch?.(e.target.value);
             }}
-            placeholder="Search 45+ Georgian markets..."
+            placeholder={t('searchMarkets')}
             className="w-full rounded-lg bg-white/5 border border-gold/10 pl-10 pr-4 py-2 text-sm text-white placeholder:text-slate-600 focus:border-wine/50 focus:outline-none focus:ring-1 focus:ring-wine/30"
           />
         </div>
       </form>
 
       <div className="flex items-center gap-2">
-        <button className="relative rounded-lg p-2 text-slate-400 hover:bg-white/5 hover:text-white">
+        <button
+          type="button"
+          onClick={() => setLocale(locale === 'en' ? 'ka' : 'en')}
+          className="flex items-center gap-1 rounded-lg px-2.5 py-2 text-sm font-medium text-slate-400 hover:bg-white/5 hover:text-gold border border-transparent hover:border-gold/20"
+          aria-label={locale === 'en' ? 'Switch to Georgian' : 'Switch to English'}
+        >
+          <Globe className="h-4 w-4" />
+          {locale === 'en' ? 'ქარ' : 'EN'}
+        </button>
+
+        <button type="button" className="relative rounded-lg p-2 text-slate-400 hover:bg-white/5 hover:text-white">
           <Bell className="h-5 w-5" />
           <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-wine" />
         </button>
@@ -48,12 +60,12 @@ export function TopBar({ onSearch }: TopBarProps) {
         {profile ? (
           <div className="hidden sm:flex items-center gap-2 rounded-lg bg-gold/10 border border-gold/25 px-3 py-1.5">
             <span className="text-gold font-semibold text-sm">
-              {formatLariPoints(profile.lari_points)}
+              {formatLariPoints(profile.lari_points, locale)}
             </span>
           </div>
         ) : (
           <Button size="sm" onClick={initDemoUser}>
-            Start Trading
+            {t('signIn')}
           </Button>
         )}
       </div>

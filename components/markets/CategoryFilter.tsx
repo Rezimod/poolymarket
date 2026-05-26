@@ -1,8 +1,9 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import type { Category } from '@/types';
 import { cn } from '@/lib/utils/cn';
+import { useLocale } from '@/lib/hooks/useLocale';
+
 interface CategoryFilterProps {
   categories: Category[];
   active: string | null;
@@ -10,11 +11,13 @@ interface CategoryFilterProps {
 }
 
 export function CategoryFilter({ categories, active, onChange }: CategoryFilterProps) {
+  const { t, categoryName, isKa } = useLocale();
+
   const pills = [
-    { slug: null, name: 'All', icon: '✨', color: '#D4A843' },
+    { slug: null, name: t('all'), icon: '✨', color: '#D4A843' },
     ...categories.map((c) => ({
       slug: c.slug,
-      name: c.name,
+      name: categoryName(c),
       icon: c.icon,
       color: c.color,
     })),
@@ -25,6 +28,7 @@ export function CategoryFilter({ categories, active, onChange }: CategoryFilterP
       {pills.map((pill) => (
         <button
           key={pill.slug ?? 'all'}
+          type="button"
           onClick={() => onChange(pill.slug)}
           className={cn(
             'relative flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-colors border',
@@ -38,23 +42,8 @@ export function CategoryFilter({ categories, active, onChange }: CategoryFilterP
               : undefined
           }
         >
-          {active === pill.slug && pill.slug === null && (
-            <motion.div
-              layoutId="category-pill"
-              className="absolute inset-0 rounded-full bg-gold"
-              transition={{ type: 'spring', stiffness: 500, damping: 40 }}
-            />
-          )}
-          {active === pill.slug && pill.slug !== null && (
-            <motion.div
-              layoutId="category-pill"
-              className="absolute inset-0 rounded-full"
-              style={{ backgroundColor: pill.color }}
-              transition={{ type: 'spring', stiffness: 500, damping: 40 }}
-            />
-          )}
           <span className="relative z-10">{pill.icon}</span>
-          <span className="relative z-10 whitespace-nowrap">{pill.name}</span>
+          <span className={cn('relative z-10 whitespace-nowrap', isKa && 'font-georgian')}>{pill.name}</span>
         </button>
       ))}
     </div>

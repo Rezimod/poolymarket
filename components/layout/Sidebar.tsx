@@ -3,28 +3,24 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-import {
-  TrendingUp,
-  Briefcase,
-  Trophy,
-  Lightbulb,
-  User,
-} from 'lucide-react';
+import { TrendingUp, Briefcase, Trophy, Lightbulb, User } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { useUserStore } from '@/stores/userStore';
+import { useLocale } from '@/lib/hooks/useLocale';
 import { formatLariPoints } from '@/lib/utils/format';
 import { MOCK_MARKETS } from '@/lib/data/mock';
 
 const navItems = [
-  { href: '/markets', label: 'Markets', icon: TrendingUp },
-  { href: '/portfolio', label: 'Portfolio', icon: Briefcase },
-  { href: '/leaderboard', label: 'Rankings', icon: Trophy },
-  { href: '/suggest', label: 'Suggest', icon: Lightbulb },
+  { href: '/markets', key: 'markets' as const, icon: TrendingUp },
+  { href: '/portfolio', key: 'portfolio' as const, icon: Briefcase },
+  { href: '/leaderboard', key: 'leaderboard' as const, icon: Trophy },
+  { href: '/suggest', key: 'suggest' as const, icon: Lightbulb },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
   const { profile } = useUserStore();
+  const { locale, t, isKa } = useLocale();
 
   return (
     <aside className="hidden lg:flex w-64 flex-col border-r border-gold/10 bg-surface/80 backdrop-blur-xl h-screen sticky top-0">
@@ -42,7 +38,7 @@ export function Sidebar() {
       </div>
 
       <nav className="flex-1 p-3 space-y-1">
-        {navItems.map(({ href, label, icon: Icon }) => {
+        {navItems.map(({ href, key, icon: Icon }) => {
           const active = pathname.startsWith(href);
           return (
             <Link key={href} href={href}>
@@ -60,7 +56,7 @@ export function Sidebar() {
                   />
                 )}
                 <Icon className="relative h-4 w-4" />
-                <span className="relative">{label}</span>
+                <span className={cn('relative', isKa && 'font-georgian')}>{t(key)}</span>
               </div>
             </Link>
           );
@@ -70,9 +66,9 @@ export function Sidebar() {
       {profile && (
         <div className="p-4 border-t border-gold/10">
           <div className="glass-card p-3 border-gold/15">
-            <p className="text-xs text-slate-500 mb-1">Balance</p>
+            <p className="text-xs text-slate-500 mb-1">{t('balance')}</p>
             <p className="font-sora font-bold text-gold text-lg">
-              {formatLariPoints(profile.lari_points)}
+              {formatLariPoints(profile.lari_points, locale)}
             </p>
             <p className="text-xs text-slate-500 mt-1">{profile.rank}</p>
           </div>
@@ -81,7 +77,7 @@ export function Sidebar() {
             className="mt-2 flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-white/5"
           >
             <User className="h-4 w-4" />
-            Profile
+            {t('profile')}
           </Link>
         </div>
       )}

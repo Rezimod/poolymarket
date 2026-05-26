@@ -6,6 +6,7 @@ import { TopBar } from '@/components/layout/TopBar';
 import { Button } from '@/components/ui/Button';
 import { ProbabilityBar } from '@/components/markets/ProbabilityBar';
 import { useUserStore } from '@/stores/userStore';
+import { useLocale } from '@/lib/hooks/useLocale';
 import { MOCK_POSITIONS } from '@/lib/data/mock';
 import { formatLariPoints, formatDate } from '@/lib/utils/format';
 import { cn } from '@/lib/utils/cn';
@@ -13,6 +14,7 @@ import { TrendingUp, TrendingDown, Gift } from 'lucide-react';
 
 export default function PortfolioPage() {
   const { profile, initDemoUser } = useUserStore();
+  const { locale, marketTitle, isKa, t } = useLocale();
 
   if (!profile) {
     return (
@@ -20,9 +22,13 @@ export default function PortfolioPage() {
         <TopBar />
         <div className="flex flex-col items-center justify-center flex-1 p-8 text-center">
           <p className="text-4xl mb-4">📊</p>
-          <h2 className="font-sora text-xl font-bold text-white mb-2">Your Portfolio</h2>
-          <p className="text-slate-400 mb-6">Sign in to track your positions and PnL</p>
-          <Button onClick={initDemoUser}>Start with 1,000 ₾P</Button>
+          <h2 className={cn('font-sora text-xl font-bold text-white mb-2', isKa && 'font-georgian')}>
+            {t('portfolio')}
+          </h2>
+          <p className={cn('text-slate-400 mb-6', isKa && 'font-georgian')}>
+            {isKa ? 'შესვლა პოზიციებისა და მოგების სანახავად' : 'Sign in to track your positions and PnL'}
+          </p>
+          <Button onClick={initDemoUser}>{t('startFree')}</Button>
         </div>
       </>
     );
@@ -46,11 +52,11 @@ export default function PortfolioPage() {
       >
         <div className="grid sm:grid-cols-3 gap-4">
           {[
-            { label: 'Balance', value: formatLariPoints(profile.lari_points), color: 'text-teal' },
-            { label: 'Portfolio Value', value: formatLariPoints(totalValue), color: 'text-white' },
+            { label: isKa ? 'ბალანსი' : 'Balance', value: formatLariPoints(profile.lari_points, locale), color: 'text-teal' },
+            { label: isKa ? 'პორტფელი' : 'Portfolio Value', value: formatLariPoints(totalValue, locale), color: 'text-white' },
             {
-              label: 'Unrealized PnL',
-              value: `${unrealizedPnl >= 0 ? '+' : ''}${formatLariPoints(unrealizedPnl)}`,
+              label: isKa ? 'მოგება' : 'Unrealized PnL',
+              value: `${unrealizedPnl >= 0 ? '+' : ''}${formatLariPoints(unrealizedPnl, locale)}`,
               color: unrealizedPnl >= 0 ? 'text-yes' : 'text-no',
             },
           ].map(({ label, value, color }) => (
@@ -62,7 +68,9 @@ export default function PortfolioPage() {
         </div>
 
         <section>
-          <h2 className="font-sora text-lg font-semibold text-white mb-4">Active Positions</h2>
+          <h2 className={cn('font-sora text-lg font-semibold text-white mb-4', isKa && 'font-georgian')}>
+            {isKa ? 'აქტიური პოზიციები' : 'Active Positions'}
+          </h2>
           <div className="space-y-3">
             {MOCK_POSITIONS.map((pos) => {
               const current = pos.market?.yes_price ?? 0.5;
@@ -70,7 +78,7 @@ export default function PortfolioPage() {
               const value = Math.floor(pos.shares * mktPrice * 100);
               const cost = Math.floor(pos.shares * pos.avg_price * 100);
               const pnl = value - cost;
-              const title = pos.market?.title;
+              const title = pos.market ? marketTitle(pos.market) : '';
 
               return (
                 <Link key={pos.id} href={`/markets/${pos.market_id}`}>
@@ -85,19 +93,22 @@ export default function PortfolioPage() {
                         >
                           {pos.side}
                         </span>
-                        <p className="font-medium text-white mt-1 line-clamp-2">{title}</p>
+                        <p className={cn('font-medium text-white mt-1 line-clamp-2', isKa && 'font-georgian')}>{title}</p>
                       </div>
                       <div className="text-right shrink-0">
-                        <p className="font-semibold text-white">{formatLariPoints(value)}</p>
+                        <p className="font-semibold text-white">{formatLariPoints(value, locale)}</p>
                         <p className={cn('text-sm flex items-center gap-0.5 justify-end', pnl >= 0 ? 'text-yes' : 'text-no')}>
                           {pnl >= 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
-                          {pnl >= 0 ? '+' : ''}{formatLariPoints(pnl)}
+                          {pnl >= 0 ? '+' : ''}{formatLariPoints(pnl, locale)}
                         </p>
                       </div>
                     </div>
                     <div className="flex justify-between text-xs text-slate-500 mb-2">
                       <span>{pos.shares} shares @ {(pos.avg_price * 100).toFixed(0)}%</span>
-                      <span>Ends {pos.market ? formatDate(pos.market.end_date) : ''}</span>
+                      <span>
+                        {isKa ? 'ვადა' : 'Ends'}{' '}
+                        {pos.market ? formatDate(pos.market.end_date, locale) : ''}
+                      </span>
                     </div>
                     {pos.market && <ProbabilityBar yesPrice={pos.market.yes_price} size="sm" showLabels={false} />}
                   </div>

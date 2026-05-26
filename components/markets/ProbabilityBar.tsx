@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils/cn';
+import { useLocale } from '@/lib/hooks/useLocale';
 
 interface ProbabilityBarProps {
   yesPrice: number;
@@ -10,6 +11,7 @@ interface ProbabilityBarProps {
 }
 
 export function ProbabilityBar({ yesPrice, size = 'md', showLabels = true }: ProbabilityBarProps) {
+  const { t } = useLocale();
   const yesPercent = Math.round(yesPrice * 100);
   const noPercent = 100 - yesPercent;
   const heights = { sm: 'h-1.5', md: 'h-2.5', lg: 'h-4' };
@@ -18,8 +20,12 @@ export function ProbabilityBar({ yesPrice, size = 'md', showLabels = true }: Pro
     <div className="w-full">
       {showLabels && (
         <div className="mb-1.5 flex justify-between text-xs font-medium">
-          <span className="text-yes">YES {yesPercent}%</span>
-          <span className="text-no">NO {noPercent}%</span>
+          <span className="text-yes">
+            {t('yesLabel')} {yesPercent}%
+          </span>
+          <span className="text-no">
+            {t('noLabel')} {noPercent}%
+          </span>
         </div>
       )}
       <div className={cn('flex overflow-hidden rounded-full bg-white/5', heights[size])}>

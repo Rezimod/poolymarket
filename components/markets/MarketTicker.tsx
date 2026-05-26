@@ -3,12 +3,15 @@
 import Link from 'next/link';
 import type { Market } from '@/types';
 import { formatVolume } from '@/lib/utils/format';
+import { useLocale } from '@/lib/hooks/useLocale';
+import { cn } from '@/lib/utils/cn';
 
 interface MarketTickerProps {
   markets: Market[];
 }
 
 export function MarketTicker({ markets }: MarketTickerProps) {
+  const { marketTitle, isKa } = useLocale();
   const hot = [...markets]
     .sort((a, b) => b.total_volume - a.total_volume)
     .slice(0, 12);
@@ -25,7 +28,9 @@ export function MarketTicker({ markets }: MarketTickerProps) {
             className="inline-flex items-center gap-2 text-sm hover:opacity-80 transition-opacity"
           >
             <span className="text-lg">{m.image_url ?? '📊'}</span>
-            <span className="text-slate-300 max-w-[200px] truncate">{m.title}</span>
+            <span className={cn('text-slate-300 max-w-[220px] truncate', isKa && 'font-georgian')}>
+              {marketTitle(m)}
+            </span>
             <span className="font-semibold text-yes">{Math.round(m.yes_price * 100)}%</span>
             <span className="text-slate-600">·</span>
             <span className="text-slate-500">{formatVolume(m.total_volume)}</span>

@@ -7,9 +7,12 @@ import { TopBar } from '@/components/layout/TopBar';
 import { Button } from '@/components/ui/Button';
 import { MOCK_CATEGORIES } from '@/lib/data/mock';
 import { useUserStore } from '@/stores/userStore';
+import { useLocale } from '@/lib/hooks/useLocale';
+import { cn } from '@/lib/utils/cn';
 
 export default function SuggestPage() {
   const { initDemoUser, profile } = useUserStore();
+  const { t, categoryName, isKa } = useLocale();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
@@ -36,8 +39,12 @@ export default function SuggestPage() {
           >
             <Check className="h-8 w-8 text-teal" />
           </motion.div>
-          <h2 className="font-sora text-xl font-bold text-white mb-2">Suggestion Submitted!</h2>
-          <p className="text-slate-400">Our team will review your market idea.</p>
+          <h2 className={cn('font-sora text-xl font-bold text-white mb-2', isKa && 'font-georgian')}>
+            {isKa ? 'შემოთავაზება მიღებულია!' : 'Suggestion Submitted!'}
+          </h2>
+          <p className={cn('text-slate-400', isKa && 'font-georgian')}>
+            {isKa ? 'ჩვენი გუნდი განიხილავს თქვენს იდეას.' : 'Our team will review your market idea.'}
+          </p>
         </div>
       </>
     );
@@ -51,23 +58,29 @@ export default function SuggestPage() {
         animate={{ opacity: 1, y: 0 }}
         className="flex-1 p-4 lg:p-6 max-w-lg mx-auto w-full"
       >
-        <h1 className="font-sora text-2xl font-bold text-white mb-2">Suggest a Market</h1>
-        <p className="text-slate-400 text-sm mb-6">What event should Georgia be predicting on?</p>
+        <h1 className={cn('font-sora text-2xl font-bold text-white mb-2', isKa && 'font-georgian')}>
+          {t('suggestMarket')}
+        </h1>
+        <p className={cn('text-slate-400 text-sm mb-6', isKa && 'font-georgian')}>{t('suggestHint')}</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="text-xs text-slate-500 mb-1.5 block">Market Title</label>
+            <label className={cn('text-xs text-slate-500 mb-1.5 block', isKa && 'font-georgian')}>
+              {isKa ? 'ბაზრის სათაური' : 'Market Title'}
+            </label>
             <input
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Will X happen by Y date?"
+              placeholder={isKa ? 'მოხდება თუ არა X თარიღამდე?' : 'Will X happen by Y date?'}
               className="w-full rounded-lg bg-white/5 border border-white/10 px-4 py-3 text-white placeholder:text-slate-600 focus:border-teal/50 focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="text-xs text-slate-500 mb-1.5 block">Description</label>
+            <label className={cn('text-xs text-slate-500 mb-1.5 block', isKa && 'font-georgian')}>
+              {isKa ? 'აღწერა' : 'Description'}
+            </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -78,24 +91,26 @@ export default function SuggestPage() {
           </div>
 
           <div>
-            <label className="text-xs text-slate-500 mb-1.5 block">Category</label>
+            <label className={cn('text-xs text-slate-500 mb-1.5 block', isKa && 'font-georgian')}>
+              {isKa ? 'კატეგორია' : 'Category'}
+            </label>
             <select
               required
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               className="w-full rounded-lg bg-elevated border border-white/10 px-4 py-3 text-white focus:border-teal/50 focus:outline-none"
             >
-              <option value="">Select category</option>
+              <option value="">{isKa ? 'აირჩიეთ კატეგორია' : 'Select category'}</option>
               {MOCK_CATEGORIES.map((c) => (
                 <option key={c.id} value={c.slug}>
-                  {c.icon} {c.name}
+                  {c.icon} {categoryName(c)}
                 </option>
               ))}
             </select>
           </div>
 
           <Button type="submit" size="lg" className="w-full">
-            {profile ? 'Submit Suggestion' : 'Sign in & Submit'}
+            {profile ? (isKa ? 'გაგზავნა' : 'Submit Suggestion') : t('signIn')}
           </Button>
         </form>
       </motion.main>
