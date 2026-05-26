@@ -3,27 +3,27 @@
 @tailwind utilities;
 
 :root {
-  --bg-base: #0b0e1a;
-  --bg-surface: #111827;
-  --bg-elevated: #1a2234;
-  --bg-glass: rgba(26, 34, 52, 0.7);
+  --bg-base: #0c0809;
+  --bg-surface: #161012;
+  --bg-elevated: #21161a;
+  --bg-glass: rgba(33, 22, 26, 0.82);
 
-  --accent-teal: #00d4aa;
-  --accent-teal-dim: rgba(0, 212, 170, 0.15);
-  --accent-amber: #f59e0b;
-  --accent-amber-dim: rgba(245, 158, 11, 0.15);
+  --accent-wine: #c41e3a;
+  --accent-wine-dim: rgba(196, 30, 58, 0.18);
+  --accent-gold: #d4a843;
+  --accent-gold-dim: rgba(212, 168, 67, 0.15);
 
-  --yes-color: #10b981;
-  --yes-dim: rgba(16, 185, 129, 0.15);
-  --no-color: #ef4444;
-  --no-dim: rgba(239, 68, 68, 0.15);
+  --yes-color: #22a06b;
+  --yes-dim: rgba(34, 160, 107, 0.18);
+  --no-color: #e05252;
+  --no-dim: rgba(224, 82, 82, 0.18);
 
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-muted: #475569;
+  --text-primary: #faf6f4;
+  --text-secondary: #b8a8ad;
+  --text-muted: #6b5a60;
 
-  --border: rgba(255, 255, 255, 0.08);
-  --border-hover: rgba(255, 255, 255, 0.14);
+  --border: rgba(212, 168, 67, 0.1);
+  --border-hover: rgba(212, 168, 67, 0.22);
 
   --radius-sm: 8px;
   --radius-md: 12px;
@@ -48,10 +48,23 @@ body {
   min-height: 100vh;
 }
 
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.35;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(196, 30, 58, 0.15), transparent),
+    radial-gradient(ellipse 60% 40% at 100% 50%, rgba(212, 168, 67, 0.06), transparent),
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4a843' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
 .glass-card {
   background: var(--bg-glass);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
 }
@@ -61,10 +74,23 @@ body {
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, var(--accent-teal) 0%, #00a8ff 100%);
+  background: linear-gradient(135deg, var(--accent-gold) 0%, #f0d78c 50%, var(--accent-wine) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+.market-ticker {
+  animation: ticker 40s linear infinite;
+}
+
+@keyframes ticker {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 ::-webkit-scrollbar {

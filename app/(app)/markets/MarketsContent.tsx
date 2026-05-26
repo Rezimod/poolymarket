@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { TopBar } from '@/components/layout/TopBar';
+import { MarketTicker } from '@/components/markets/MarketTicker';
 import { CategoryFilter } from '@/components/markets/CategoryFilter';
 import { MarketFeed } from '@/components/markets/MarketFeed';
 import { ProbabilityBar } from '@/components/markets/ProbabilityBar';
@@ -33,7 +34,7 @@ export default function MarketsContent() {
     setSearch(searchParams.get('q') ?? '');
   }, [searchParams]);
 
-  const featured = MOCK_MARKETS.find((m) => m.is_featured) ?? MOCK_MARKETS[0];
+  const featured = MOCK_MARKETS.find((m) => m.is_featured && m.id === 'm11') ?? MOCK_MARKETS.find((m) => m.is_featured) ?? MOCK_MARKETS[0];
 
   const markets = useMemo(() => {
     let result = [...MOCK_MARKETS];
@@ -43,7 +44,8 @@ export default function MarketsContent() {
       result = result.filter(
         (m) =>
           m.title.toLowerCase().includes(q) ||
-          (m.title_ka?.toLowerCase().includes(q) ?? false)
+          (m.title_ka?.toLowerCase().includes(q) ?? false) ||
+          (m.description?.toLowerCase().includes(q) ?? false)
       );
     }
     switch (sort) {
@@ -58,27 +60,50 @@ export default function MarketsContent() {
     }
   }, [category, search, sort]);
 
+  const totalVolume = MOCK_MARKETS.reduce((s, m) => s + m.total_volume, 0);
+
   return (
     <>
       <TopBar onSearch={setSearch} />
+      <MarketTicker markets={MOCK_MARKETS} />
       <motion.main
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex-1 p-4 lg:p-6 max-w-6xl mx-auto w-full"
+        className="flex-1 p-4 lg:p-6 max-w-7xl mx-auto w-full"
       >
+        <div className="mb-6 flex flex-wrap items-center gap-4 text-sm text-slate-400">
+          <span>
+            <strong className="text-gold">{MOCK_MARKETS.length}</strong>{' '}
+            {locale === 'ka' ? 'აქტიური ბაზარი' : 'active markets'}
+          </span>
+          <span className="text-slate-600">·</span>
+          <span>
+            <strong className="text-white">{formatVolume(totalVolume)}</strong>{' '}
+            {locale === 'ka' ? 'სულ მოცულობა' : 'total volume'}
+          </span>
+        </div>
+
         <Link href={`/markets/${featured.id}`}>
-          <div className="relative mb-8 overflow-hidden rounded-2xl border border-teal/20 bg-gradient-to-br from-teal/10 via-elevated to-base p-6 md:p-8 cursor-pointer group hover:border-teal/40 transition-colors">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-teal/5 rounded-full blur-3xl" />
-            <p className="text-xs font-medium text-teal mb-2">⭐ FEATURED</p>
-            <h2 className="font-sora text-xl md:text-2xl font-bold text-white mb-4 max-w-2xl group-hover:text-teal transition-colors">
+          <div className="relative mb-8 overflow-hidden rounded-2xl border border-wine/25 bg-gradient-to-br from-wine/20 via-elevated to-base p-6 md:p-8 cursor-pointer group hover:border-gold/40 transition-all hover:shadow-glow">
+            <div className="absolute top-0 right-0 w-72 h-72 bg-gold/5 rounded-full blur-3xl" />
+            <div className="absolute -left-4 top-4 text-6xl opacity-20">{featured.image_url}</div>
+            <p className="text-xs font-bold uppercase tracking-widest text-gold mb-2">
+              🔥 {locale === 'ka' ? 'ცხელი ბაზარი' : 'Trending now'}
+            </p>
+            <h2
+              className={cn(
+                'font-sora text-xl md:text-2xl font-bold text-white mb-4 max-w-2xl group-hover:text-gold transition-colors relative z-10',
+                locale === 'ka' && 'font-georgian'
+              )}
+            >
               {locale === 'ka' && featured.title_ka ? featured.title_ka : featured.title}
             </h2>
-            <div className="flex items-end gap-6 mb-4">
+            <div className="flex items-end gap-6 mb-4 relative z-10">
               <div>
                 <p className="text-4xl md:text-5xl font-sora font-bold text-yes">
                   {Math.round(featured.yes_price * 100)}%
                 </p>
-                <p className="text-sm text-slate-500">YES probability</p>
+                <p className="text-sm text-slate-500">YES chance</p>
               </div>
               <div className="text-sm text-slate-400">
                 <p>{formatVolume(featured.total_volume)} volume</p>
@@ -100,23 +125,26 @@ export default function MarketsContent() {
               key={opt.value}
               onClick={() => setSort(opt.value)}
               className={cn(
-                'shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors',
+                'shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors border',
                 sort === opt.value
-                  ? 'bg-white/10 text-white'
-                  : 'text-slate-500 hover:text-white'
+                  ? 'bg-gold/20 border-gold/40 text-gold'
+                  : 'border-transparent text-slate-500 hover:text-white hover:bg-white/5'
               )}
             >
               {locale === 'ka' ? opt.labelKa : opt.label}
             </button>
           ))}
+          <span className="ml-auto shrink-0 self-center text-xs text-slate-600">
+            {markets.length} {locale === 'ka' ? 'შედეგი' : 'results'}
+          </span>
         </div>
 
         <MarketFeed markets={markets} />
 
         {!profile && (
           <div className="fixed bottom-20 lg:bottom-6 left-1/2 -translate-x-1/2 z-40">
-            <Button size="lg" onClick={initDemoUser} className="shadow-glow">
-              Predict Now — Get 1,000 ₾P Free
+            <Button size="lg" onClick={initDemoUser} className="shadow-glow-gold">
+              {locale === 'ka' ? 'დაიწყე — 1,000 ₾P უფასოდ' : 'Predict Now — Get 1,000 ₾P Free'}
             </Button>
           </div>
         )}

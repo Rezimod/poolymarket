@@ -15,11 +15,12 @@ export function CategoryFilter({ categories, active, onChange }: CategoryFilterP
   const locale = useUserStore((s) => s.locale);
 
   const pills = [
-    { slug: null, name: locale === 'ka' ? 'ყველა' : 'All', icon: '✨' },
+    { slug: null, name: locale === 'ka' ? 'ყველა' : 'All', icon: '✨', color: '#D4A843' },
     ...categories.map((c) => ({
       slug: c.slug,
       name: locale === 'ka' ? c.name_ka : c.name,
       icon: c.icon,
+      color: c.color,
     })),
   ];
 
@@ -30,16 +31,29 @@ export function CategoryFilter({ categories, active, onChange }: CategoryFilterP
           key={pill.slug ?? 'all'}
           onClick={() => onChange(pill.slug)}
           className={cn(
-            'relative flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-colors',
+            'relative flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-colors border',
             active === pill.slug
-              ? 'text-[#0B0E1A]'
-              : 'text-slate-400 hover:text-white hover:bg-white/5'
+              ? 'border-transparent text-white'
+              : 'border-gold/10 text-slate-400 hover:text-white hover:border-gold/25'
           )}
+          style={
+            active === pill.slug
+              ? { backgroundColor: pill.color, borderColor: pill.color }
+              : undefined
+          }
         >
-          {active === pill.slug && (
+          {active === pill.slug && pill.slug === null && (
             <motion.div
               layoutId="category-pill"
-              className="absolute inset-0 rounded-full bg-teal"
+              className="absolute inset-0 rounded-full bg-gold"
+              transition={{ type: 'spring', stiffness: 500, damping: 40 }}
+            />
+          )}
+          {active === pill.slug && pill.slug !== null && (
+            <motion.div
+              layoutId="category-pill"
+              className="absolute inset-0 rounded-full"
+              style={{ backgroundColor: pill.color }}
               transition={{ type: 'spring', stiffness: 500, damping: 40 }}
             />
           )}
