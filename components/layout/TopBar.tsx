@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, Globe, Bell } from 'lucide-react';
+import { Search, Bell } from 'lucide-react';
 import { useUserStore } from '@/stores/userStore';
 import { useLocale } from '@/lib/hooks/useLocale';
+import { LocaleToggle } from '@/components/shared/LocaleToggle';
 import { Button } from '@/components/ui/Button';
 import { formatLariPoints } from '@/lib/utils/format';
 
@@ -15,7 +16,7 @@ interface TopBarProps {
 export function TopBar({ onSearch }: TopBarProps) {
   const router = useRouter();
   const { profile, initDemoUser } = useUserStore();
-  const { locale, setLocale, t } = useLocale();
+  const { locale, t } = useLocale();
   const [query, setQuery] = useState('');
 
   const handleSearch = (e: React.FormEvent) => {
@@ -42,15 +43,7 @@ export function TopBar({ onSearch }: TopBarProps) {
       </form>
 
       <div className="flex items-center gap-2">
-        <button
-          type="button"
-          onClick={() => setLocale(locale === 'en' ? 'ka' : 'en')}
-          className="flex items-center gap-1 rounded-lg px-2.5 py-2 text-sm font-medium text-slate-400 hover:bg-white/5 hover:text-gold border border-transparent hover:border-gold/20"
-          aria-label={locale === 'en' ? 'Switch to Georgian' : 'Switch to English'}
-        >
-          <Globe className="h-4 w-4" />
-          {locale === 'en' ? 'ქარ' : 'EN'}
-        </button>
+        <LocaleToggle />
 
         <button type="button" className="relative rounded-lg p-2 text-slate-400 hover:bg-white/5 hover:text-white">
           <Bell className="h-5 w-5" />

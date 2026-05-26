@@ -17,7 +17,7 @@ interface MarketCardProps {
 }
 
 export function MarketCard({ market, index = 0 }: MarketCardProps) {
-  const { locale, marketTitle, isKa } = useLocale();
+  const { locale, marketTitle, isKa, t } = useLocale();
   const title = marketTitle(market);
   const yesCents = Math.round(market.yes_price * 100);
   const noCents = 100 - yesCents;
@@ -41,8 +41,13 @@ export function MarketCard({ market, index = 0 }: MarketCardProps) {
               </div>
             </div>
             {isHot && (
-              <span className="shrink-0 rounded-full bg-wine/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-wine">
-                Hot
+              <span
+                className={cn(
+                  'shrink-0 rounded-full bg-wine/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-wine',
+                  isKa && 'font-georgian normal-case'
+                )}
+              >
+                {t('hot')}
               </span>
             )}
           </div>
@@ -58,8 +63,8 @@ export function MarketCard({ market, index = 0 }: MarketCardProps) {
 
           <div className="flex items-end justify-between">
             <div>
-              <p className="text-[10px] uppercase tracking-wider text-slate-500 mb-0.5">
-                {isKa ? 'ალბათობა' : 'Chance'}
+              <p className={cn('text-[10px] uppercase tracking-wider text-slate-500 mb-0.5', isKa && 'font-georgian')}>
+                {t('chance')}
               </p>
               <p className="font-sora text-2xl font-bold text-yes">
                 <CountUp value={market.yes_price * 100} decimals={0} />%
@@ -85,13 +90,13 @@ export function MarketCard({ market, index = 0 }: MarketCardProps) {
             href={`/markets/${market.id}?side=yes`}
             className="rounded-lg border border-yes/30 bg-yes/10 py-2 text-center text-sm font-semibold text-yes hover:bg-yes/20 transition-colors"
           >
-            {isKa ? 'დიახ' : 'Yes'} {yesCents}¢
+            {t('yesLabel')} {yesCents}¢
           </Link>
           <Link
             href={`/markets/${market.id}?side=no`}
             className="rounded-lg border border-no/30 bg-no/10 py-2 text-center text-sm font-semibold text-no hover:bg-no/20 transition-colors"
           >
-            {isKa ? 'არა' : 'No'} {noCents}¢
+            {t('noLabel')} {noCents}¢
           </Link>
         </div>
       </div>

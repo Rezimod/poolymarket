@@ -30,6 +30,58 @@ export const enUI = {
   noLabel: 'NO',
   nplgNote: 'Georgian terms follow the National Parliamentary Library lexicon',
   nplgLink: 'NPLG gwdict',
+  hot: 'Hot',
+  buyYes: 'Buy YES',
+  buyNo: 'Buy NO',
+  marketOrder: 'Market',
+  limitOrder: 'Limit',
+  limitPrice: 'Limit price',
+  amount: 'Amount (₾P)',
+  shares: 'Shares',
+  price: 'Price',
+  ifCorrectWins: 'If correct, wins',
+  signInToTrade: 'Sign in to Trade',
+  confirmOrder: 'Confirm Order',
+  orderPlaced: 'Order Placed!',
+  discussion: 'Discussion',
+  sharePrediction: 'Share your prediction...',
+  post: 'Post',
+  recentTrades: 'Recent Trades',
+  noTradesYet: 'No trades yet',
+  orderBook: 'Order Book',
+  yesBids: 'YES Bids',
+  noBids: 'NO Bids',
+  resolutionCriteria: 'Resolution Criteria',
+  source: 'Source',
+  liquidity: 'Liquidity',
+  status: 'Status',
+  endDate: 'End Date',
+  weekly: 'Weekly',
+  monthly: 'Monthly',
+  allTime: 'All Time',
+  you: 'You',
+  winRate: 'win',
+  volShort: 'vol',
+  trade: 'Trade',
+  startPredicting: 'Start Predicting',
+  landingBadge: 'markets · Play-money · Georgian culture',
+  landingTitle1: 'Predict Georgia.',
+  landingTitle2: 'From politics to marshrutka AC.',
+  landingSubtitle:
+    'Binary YES/NO markets on everything Georgian — serious elections, wild hypotheticals, and supra logic. LARI Points only. Not Polymarket. Better jokes.',
+  browseMarkets: 'Browse Markets',
+  sampleMarkets: 'Sample markets',
+  featureMechanics: 'Polymarket mechanics',
+  featureMechanicsDesc: 'YES/NO shares, live odds, order book, charts — the model you know.',
+  featureSoul: 'Georgian soul',
+  featureSoulDesc: 'Wine-red UI, 45 local markets, NPLG-standard Georgian lexicon in data. Zero clone energy.',
+  featureRewards: 'Win real rewards',
+  featureRewardsDesc: 'Top predictors earn Astroman vouchers and leaderboard glory.',
+  footerTagline: 'Poolymarket.ge — Built for Georgia 🇬🇪 · Play-money only',
+  partner: 'Partner',
+  statusOpen: 'open',
+  statusResolved: 'resolved',
+  statusCancelled: 'cancelled',
 } as const;
 
 export type UIKey = keyof typeof enUI;
@@ -51,4 +103,21 @@ export function categoryName(
   category: { name: string; name_ka: string }
 ): string {
   return locale === 'ka' ? category.name_ka : category.name;
+}
+
+export function marketStatus(locale: Locale, status: string): string {
+  const map: Record<string, UIKey> = {
+    open: 'statusOpen',
+    resolved: 'statusResolved',
+    cancelled: 'statusCancelled',
+  };
+  const key = map[status];
+  return key ? t(locale, key) : status;
+}
+
+export function commentContent(
+  locale: Locale,
+  comment: { content: string; content_ka?: string | null }
+): string {
+  return locale === 'ka' && comment.content_ka ? comment.content_ka : comment.content;
 }

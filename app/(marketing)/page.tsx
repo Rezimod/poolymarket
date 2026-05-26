@@ -5,8 +5,11 @@ import { motion } from 'framer-motion';
 import { ArrowRight, TrendingUp, Shield, Gift, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { ProbabilityBar } from '@/components/markets/ProbabilityBar';
+import { LocaleToggle } from '@/components/shared/LocaleToggle';
 import { MOCK_MARKETS } from '@/lib/data/mock';
 import { formatVolume } from '@/lib/utils/format';
+import { useLocale } from '@/lib/hooks/useLocale';
+import { cn } from '@/lib/utils/cn';
 
 const featured = MOCK_MARKETS.find((m) => m.id === 'm11') ?? MOCK_MARKETS[0];
 const previewMarkets = [...MOCK_MARKETS]
@@ -14,6 +17,9 @@ const previewMarkets = [...MOCK_MARKETS]
   .slice(0, 6);
 
 export default function LandingPage() {
+  const { t, marketTitle, isKa } = useLocale();
+  const featuredTitle = marketTitle(featured);
+
   return (
     <motion.div className="min-h-screen bg-base overflow-hidden">
       <nav className="flex items-center justify-between px-6 py-4 border-b border-gold/10 relative z-10">
@@ -26,11 +32,17 @@ export default function LandingPage() {
           </span>
         </div>
         <div className="flex items-center gap-3">
-          <Link href="/markets" className="text-sm text-slate-400 hover:text-gold transition-colors">
-            Markets
+          <LocaleToggle />
+          <Link
+            href="/markets"
+            className={cn('text-sm text-slate-400 hover:text-gold transition-colors', isKa && 'font-georgian')}
+          >
+            {t('markets')}
           </Link>
           <Link href="/markets">
-            <Button size="sm">Start Predicting</Button>
+            <Button size="sm" className={isKa ? 'font-georgian' : ''}>
+              {t('startPredicting')}
+            </Button>
           </Link>
         </div>
       </nav>
@@ -47,31 +59,47 @@ export default function LandingPage() {
           transition={{ duration: 0.5 }}
           className="relative z-10"
         >
-          <div className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-4 py-1.5 text-sm text-gold mb-8">
-            <Sparkles className="h-4 w-4" />
-            <span>{MOCK_MARKETS.length} markets · Play-money · Georgian culture</span>
+          <div
+            className={cn(
+              'inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-4 py-1.5 text-sm text-gold mb-8',
+              isKa && 'font-georgian'
+            )}
+          >
+            <Sparkles className="h-4 w-4 shrink-0" />
+            <span>
+              {MOCK_MARKETS.length} {t('landingBadge')}
+            </span>
           </div>
 
-          <h1 className="font-sora text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
-            Predict Georgia.
+          <h1
+            className={cn(
+              'font-sora text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6',
+              isKa && 'font-georgian'
+            )}
+          >
+            {t('landingTitle1')}
             <br />
-            <span className="text-gradient">From politics to marshrutka AC.</span>
+            <span className="text-gradient">{t('landingTitle2')}</span>
           </h1>
 
-          <p className="text-lg text-slate-400 max-w-2xl mx-auto mb-10">
-            Binary YES/NO markets on everything Georgian — serious elections, wild hypotheticals,
-            and supra logic. LARI Points only. Not Polymarket. Better jokes.
+          <p
+            className={cn(
+              'text-lg text-slate-400 max-w-2xl mx-auto mb-10',
+              isKa && 'font-georgian leading-relaxed'
+            )}
+          >
+            {t('landingSubtitle')}
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/markets">
-              <Button size="lg" className="gap-2">
-                Browse {MOCK_MARKETS.length} Markets <ArrowRight className="h-4 w-4" />
+              <Button size="lg" className={cn('gap-2', isKa && 'font-georgian')}>
+                {t('browseMarkets')} ({MOCK_MARKETS.length}) <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
             <Link href="/leaderboard">
-              <Button variant="secondary" size="lg">
-                Leaderboard
+              <Button variant="secondary" size="lg" className={isKa ? 'font-georgian' : ''}>
+                {t('leaderboard')}
               </Button>
             </Link>
           </div>
@@ -83,19 +111,28 @@ export default function LandingPage() {
           transition={{ delay: 0.3, duration: 0.6 }}
           className="mt-14 max-w-lg mx-auto glass-card p-6 text-left border-wine/20 relative z-10"
         >
-          <p className="text-xs text-wine font-bold uppercase tracking-wider mb-2">
-            🔥 {featured.image_url} Trending
+          <p className={cn('text-xs text-wine font-bold uppercase tracking-wider mb-2', isKa && 'font-georgian')}>
+            🔥 {featured.image_url} {t('trending')}
           </p>
-          <h3 className="font-sora font-semibold text-white mb-4 line-clamp-2">{featured.title}</h3>
+          <h3
+            className={cn(
+              'font-sora font-semibold text-white mb-4 line-clamp-2',
+              isKa && 'font-georgian'
+            )}
+          >
+            {featuredTitle}
+          </h3>
           <div className="flex items-end justify-between mb-3">
             <div>
-              <p className="text-3xl font-sora font-bold text-yes">
+              <p className={cn('text-3xl font-sora font-bold text-yes')}>
                 {Math.round(featured.yes_price * 100)}%
               </p>
-              <p className="text-xs text-slate-500">YES chance</p>
+              <p className={cn('text-xs text-slate-500', isKa && 'font-georgian')}>{t('chance')}</p>
             </div>
             <Link href={`/markets/${featured.id}`}>
-              <Button size="sm" variant="secondary">Trade</Button>
+              <Button size="sm" variant="secondary" className={isKa ? 'font-georgian' : ''}>
+                {t('trade')}
+              </Button>
             </Link>
           </div>
           <ProbabilityBar yesPrice={featured.yes_price} size="lg" />
@@ -104,8 +141,13 @@ export default function LandingPage() {
 
       <section className="px-6 py-12 border-t border-gold/10 relative z-10">
         <div className="max-w-6xl mx-auto">
-          <h2 className="font-sora text-2xl font-bold text-white mb-6 text-center">
-            Sample markets
+          <h2
+            className={cn(
+              'font-sora text-2xl font-bold text-white mb-6 text-center',
+              isKa && 'font-georgian'
+            )}
+          >
+            {t('sampleMarkets')}
           </h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {previewMarkets.map((m, i) => (
@@ -121,9 +163,18 @@ export default function LandingPage() {
                   className="block rounded-xl border border-gold/10 bg-elevated/60 p-4 hover:border-wine/30 transition-colors h-full"
                 >
                   <span className="text-2xl">{m.image_url}</span>
-                  <p className="font-medium text-white text-sm mt-2 line-clamp-2">{m.title}</p>
+                  <p
+                    className={cn(
+                      'font-medium text-white text-sm mt-2 line-clamp-2',
+                      isKa && 'font-georgian'
+                    )}
+                  >
+                    {marketTitle(m)}
+                  </p>
                   <div className="flex justify-between mt-3 text-xs">
-                    <span className="text-yes font-bold">{Math.round(m.yes_price * 100)}% YES</span>
+                    <span className="text-yes font-bold">
+                      {Math.round(m.yes_price * 100)}% {t('yesLabel')}
+                    </span>
                     <span className="text-slate-500">{formatVolume(m.total_volume)}</span>
                   </div>
                 </Link>
@@ -136,24 +187,12 @@ export default function LandingPage() {
       <section className="px-6 py-20 border-t border-gold/10 bg-surface/40 relative z-10">
         <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
           {[
-            {
-              icon: TrendingUp,
-              title: 'Polymarket mechanics',
-              desc: 'YES/NO shares, live odds, order book, charts — the model you know.',
-            },
-            {
-              icon: Shield,
-              title: 'Georgian soul',
-              desc: 'Wine-red UI, 45 local markets, NPLG-standard Georgian lexicon in data. Zero clone energy.',
-            },
-            {
-              icon: Gift,
-              title: 'Win real rewards',
-              desc: 'Top predictors earn Astroman vouchers and leaderboard glory.',
-            },
-          ].map(({ icon: Icon, title, desc }, i) => (
+            { icon: TrendingUp, titleKey: 'featureMechanics' as const, descKey: 'featureMechanicsDesc' as const },
+            { icon: Shield, titleKey: 'featureSoul' as const, descKey: 'featureSoulDesc' as const },
+            { icon: Gift, titleKey: 'featureRewards' as const, descKey: 'featureRewardsDesc' as const },
+          ].map(({ icon: Icon, titleKey, descKey }, i) => (
             <motion.div
-              key={title}
+              key={titleKey}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -163,17 +202,21 @@ export default function LandingPage() {
               <div className="h-10 w-10 rounded-lg bg-wine/15 flex items-center justify-center mb-4">
                 <Icon className="h-5 w-5 text-gold" />
               </div>
-              <h3 className="font-sora font-semibold text-white mb-2">{title}</h3>
-              <p className="text-sm text-slate-400">{desc}</p>
+              <h3 className={cn('font-sora font-semibold text-white mb-2', isKa && 'font-georgian')}>
+                {t(titleKey)}
+              </h3>
+              <p className={cn('text-sm text-slate-400', isKa && 'font-georgian leading-relaxed')}>
+                {t(descKey)}
+              </p>
             </motion.div>
           ))}
         </div>
       </section>
 
       <footer className="px-6 py-8 border-t border-gold/10 text-center text-sm text-slate-500 relative z-10">
-        <p>Poolymarket.ge — Built for Georgia 🇬🇪 · Play-money only</p>
-        <p className="mt-1">
-          Partner · <span className="text-gold">Astroman.ge</span>
+        <p className={isKa ? 'font-georgian' : ''}>{t('footerTagline')}</p>
+        <p className={cn('mt-1', isKa && 'font-georgian')}>
+          {t('partner')} · <span className="text-gold">Astroman.ge</span>
         </p>
       </footer>
     </motion.div>

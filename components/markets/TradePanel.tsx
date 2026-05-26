@@ -10,6 +10,7 @@ import { Card } from '@/components/ui/Card';
 import { sharesFromAmount, estimatedPayout } from '@/lib/utils/probability';
 import { formatLariPoints } from '@/lib/utils/format';
 import { useUserStore } from '@/stores/userStore';
+import { useLocale } from '@/lib/hooks/useLocale';
 import { cn } from '@/lib/utils/cn';
 
 interface TradePanelProps {
@@ -26,6 +27,7 @@ export function TradePanel({ market, onTrade }: TradePanelProps) {
   const profile = useUserStore((s) => s.profile);
   const updateBalance = useUserStore((s) => s.updateBalance);
   const initDemoUser = useUserStore((s) => s.initDemoUser);
+  const { locale, t, isKa } = useLocale();
 
   const [side, setSide] = useState<OrderSide>('yes');
   const [orderType, setOrderType] = useState<OrderType>('market');
@@ -66,6 +68,8 @@ export function TradePanel({ market, onTrade }: TradePanelProps) {
     }
   };
 
+  const sideLabel = (s: OrderSide) => (s === 'yes' ? t('yesLabel') : t('noLabel'));
+
   return (
     <Card className="sticky top-4">
       <div className="flex rounded-lg bg-white/5 p-1 mb-4">
@@ -75,6 +79,7 @@ export function TradePanel({ market, onTrade }: TradePanelProps) {
             onClick={() => setSide(s)}
             className={cn(
               'flex-1 rounded-md py-2 text-sm font-semibold transition-all',
+              isKa && 'font-georgian',
               side === s
                 ? s === 'yes'
                   ? 'bg-yes text-white'
@@ -82,30 +87,31 @@ export function TradePanel({ market, onTrade }: TradePanelProps) {
                 : 'text-slate-400 hover:text-white'
             )}
           >
-            Buy {s.toUpperCase()}
+            {s === 'yes' ? t('buyYes') : t('buyNo')}
           </button>
         ))}
       </div>
 
       <div className="flex gap-2 mb-4">
-        {(['market', 'limit'] as OrderType[]).map((t) => (
+        {(['market', 'limit'] as OrderType[]).map((ot) => (
           <button
-            key={t}
-            onClick={() => setOrderType(t)}
+            key={ot}
+            onClick={() => setOrderType(ot)}
             className={cn(
-              'flex-1 rounded-md py-1.5 text-xs font-medium capitalize transition-colors',
-              orderType === t ? 'bg-teal/20 text-teal' : 'text-slate-500 hover:text-white'
+              'flex-1 rounded-md py-1.5 text-xs font-medium transition-colors',
+              isKa && 'font-georgian',
+              orderType === ot ? 'bg-teal/20 text-teal' : 'text-slate-500 hover:text-white'
             )}
           >
-            {t}
+            {ot === 'market' ? t('marketOrder') : t('limitOrder')}
           </button>
         ))}
       </div>
 
       {orderType === 'limit' && (
         <div className="mb-4">
-          <label className="text-xs text-slate-500 mb-2 block">
-            Limit price: {limitPrice}%
+          <label className={cn('text-xs text-slate-500 mb-2 block', isKa && 'font-georgian')}>
+            {t('limitPrice')}: {limitPrice}%
           </label>
           <input
             type="range"
@@ -119,7 +125,9 @@ export function TradePanel({ market, onTrade }: TradePanelProps) {
       )}
 
       <div className="mb-4">
-        <label className="text-xs text-slate-500 mb-1.5 block">Amount (₾P)</label>
+        <label className={cn('text-xs text-slate-500 mb-1.5 block', isKa && 'font-georgian')}>
+          {t('amount')}
+        </label>
         <input
           type="number"
           value={amount}
@@ -128,8 +136,8 @@ export function TradePanel({ market, onTrade }: TradePanelProps) {
           className="w-full rounded-lg bg-white/5 border border-white/10 px-4 py-3 text-lg font-semibold text-white placeholder:text-slate-600 focus:border-teal/50 focus:outline-none focus:ring-1 focus:ring-teal/30"
         />
         {profile && (
-          <p className="text-xs text-slate-500 mt-1">
-            Balance: {formatLariPoints(profile.lari_points)}
+          <p className={cn('text-xs text-slate-500 mt-1', isKa && 'font-georgian')}>
+            {t('balance')}: {formatLariPoints(profile.lari_points, locale)}
           </p>
         )}
       </div>
@@ -141,16 +149,16 @@ export function TradePanel({ market, onTrade }: TradePanelProps) {
           className="mb-4 rounded-lg bg-white/5 p-3 text-sm space-y-1"
         >
           <div className="flex justify-between text-slate-400">
-            <span>Shares</span>
+            <span className={isKa ? 'font-georgian' : ''}>{t('shares')}</span>
             <span className="text-white font-medium">{shares}</span>
           </div>
           <div className="flex justify-between text-slate-400">
-            <span>Price</span>
+            <span className={isKa ? 'font-georgian' : ''}>{t('price')}</span>
             <span className="text-white font-medium">{(effectivePrice * 100).toFixed(1)}%</span>
           </div>
           <div className="flex justify-between text-slate-400">
-            <span>If correct, wins</span>
-            <span className="text-teal font-semibold">{formatLariPoints(payout)}</span>
+            <span className={isKa ? 'font-georgian' : ''}>{t('ifCorrectWins')}</span>
+            <span className="text-teal font-semibold">{formatLariPoints(payout, locale)}</span>
           </div>
         </motion.div>
       )}
@@ -158,18 +166,36 @@ export function TradePanel({ market, onTrade }: TradePanelProps) {
       <Button
         variant={side === 'yes' ? 'yes' : 'no'}
         size="lg"
-        className="w-full"
+        className={cn('w-full', isKa && 'font-georgian')}
         disabled={!numAmount}
         onClick={() => (profile ? setConfirmOpen(true) : initDemoUser())}
       >
-        {profile ? `Buy ${side.toUpperCase()}` : 'Sign in to Trade'}
+        {profile
+          ? `${side === 'yes' ? t('buyYes') : t('buyNo')}`
+          : t('signInToTrade')}
       </Button>
 
-      <Modal open={confirmOpen} onClose={() => !loading && setConfirmOpen(false)} title="Confirm Order">
+      <Modal
+        open={confirmOpen}
+        onClose={() => !loading && setConfirmOpen(false)}
+        title={t('confirmOrder')}
+      >
         <div className="space-y-4">
-          <p className="text-slate-400 text-sm">
-            Buy <span className="text-white font-semibold">{shares}</span> {side.toUpperCase()} shares
-            for <span className="text-white font-semibold">{formatLariPoints(numAmount)}</span>
+          <p className={cn('text-slate-400 text-sm', isKa && 'font-georgian')}>
+            {isKa ? (
+              <>
+                <span className="text-white font-semibold">{shares}</span> {sideLabel(side)}{' '}
+                აქციის ყიდვა{' '}
+                <span className="text-white font-semibold">{formatLariPoints(numAmount, locale)}</span>
+                -ად
+              </>
+            ) : (
+              <>
+                Buy <span className="text-white font-semibold">{shares}</span>{' '}
+                {side.toUpperCase()} shares for{' '}
+                <span className="text-white font-semibold">{formatLariPoints(numAmount, locale)}</span>
+              </>
+            )}
           </p>
           <Button
             variant={side === 'yes' ? 'yes' : 'no'}
@@ -186,10 +212,10 @@ export function TradePanel({ market, onTrade }: TradePanelProps) {
                   animate={{ scale: 1 }}
                   className="flex items-center gap-2"
                 >
-                  <Check className="h-5 w-5" /> Order Placed!
+                  <Check className="h-5 w-5" /> {t('orderPlaced')}
                 </motion.span>
               ) : (
-                <motion.span key="confirm">Confirm Order</motion.span>
+                <motion.span key="confirm">{t('confirmOrder')}</motion.span>
               )}
             </AnimatePresence>
           </Button>

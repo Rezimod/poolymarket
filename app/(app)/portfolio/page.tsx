@@ -52,10 +52,10 @@ export default function PortfolioPage() {
       >
         <div className="grid sm:grid-cols-3 gap-4">
           {[
-            { label: isKa ? 'ბალანსი' : 'Balance', value: formatLariPoints(profile.lari_points, locale), color: 'text-teal' },
-            { label: isKa ? 'პორტფელი' : 'Portfolio Value', value: formatLariPoints(totalValue, locale), color: 'text-white' },
+            { label: t('balance'), value: formatLariPoints(profile.lari_points, locale), color: 'text-teal' },
+            { label: t('portfolio'), value: formatLariPoints(totalValue, locale), color: 'text-white' },
             {
-              label: isKa ? 'მოგება' : 'Unrealized PnL',
+              label: isKa ? 'მოუგებელი მოგება' : 'Unrealized PnL',
               value: `${unrealizedPnl >= 0 ? '+' : ''}${formatLariPoints(unrealizedPnl, locale)}`,
               color: unrealizedPnl >= 0 ? 'text-yes' : 'text-no',
             },

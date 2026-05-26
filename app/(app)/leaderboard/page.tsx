@@ -51,7 +51,7 @@ export default function LeaderboardPage() {
                 period === p ? 'bg-teal text-[#0B0E1A]' : 'text-slate-400 hover:text-white bg-white/5'
               )}
             >
-              {p === 'alltime' ? 'All Time' : p}
+              {p === 'weekly' ? t('weekly') : p === 'monthly' ? t('monthly') : t('allTime')}
             </button>
           ))}
         </div>
@@ -76,7 +76,9 @@ export default function LeaderboardPage() {
                 <p className="text-teal font-bold text-sm mt-1">
                   {formatLariPoints(entry.pnl, locale)}
                 </p>
-                <p className="text-xs text-slate-500">{formatVolume(entry.volume)} vol</p>
+                <p className={cn('text-xs text-slate-500', isKa && 'font-georgian')}>
+                  {formatVolume(entry.volume)} {t('volShort')}
+                </p>
               </motion.div>
             );
           })}
@@ -100,7 +102,9 @@ export default function LeaderboardPage() {
               </div>
               <div className="text-right text-sm">
                 <p className="text-teal font-semibold">{formatLariPoints(entry.pnl, locale)}</p>
-                <p className="text-slate-500 text-xs">{(entry.win_rate * 100).toFixed(0)}% win</p>
+                <p className={cn('text-slate-500 text-xs', isKa && 'font-georgian')}>
+                  {(entry.win_rate * 100).toFixed(0)}% {t('winRate')}
+                </p>
               </div>
             </div>
           ))}
@@ -112,8 +116,8 @@ export default function LeaderboardPage() {
               <span className="text-slate-500 font-mono text-sm">#{userEntry.rank}</span>
               <UserAvatar username={profile.username} size="sm" />
               <div className="flex-1">
-                <p className="text-sm font-medium text-white">You</p>
-                <p className="text-xs text-teal">{formatLariPoints(userEntry.pnl)}</p>
+                <p className={cn('text-sm font-medium text-white', isKa && 'font-georgian')}>{t('you')}</p>
+                <p className="text-xs text-teal">{formatLariPoints(userEntry.pnl, locale)}</p>
               </div>
             </div>
           </div>

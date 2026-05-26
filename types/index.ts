@@ -99,6 +99,7 @@ export interface Comment {
   market_id: string;
   user_id: string;
   content: string;
+  content_ka?: string | null;
   likes: number;
   created_at: string;
   profile?: Profile;

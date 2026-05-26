@@ -23,7 +23,7 @@ import { cn } from '@/lib/utils/cn';
 
 export default function MarketDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const { locale, marketTitle, isKa, t } = useLocale();
+  const { locale, marketTitle, isKa, t, marketStatus } = useLocale();
   const { activeMarket, setActiveMarket, recentTrades, addTrade } = useMarketStore();
   const [criteriaOpen, setCriteriaOpen] = useState(false);
   const [market, setMarket] = useState<Market | null>(null);
@@ -99,10 +99,10 @@ export default function MarketDetailPage() {
                 </div>
                 <div className="text-right text-sm text-slate-400 space-y-1">
                   <p>
-                    {isKa ? 'მოცულობა' : 'Vol'}: {formatVolume(displayMarket.total_volume)}
+                    {t('volume')}: {formatVolume(displayMarket.total_volume)}
                   </p>
                   <p>
-                    {isKa ? 'ვადა' : 'Ends'}: {formatDate(displayMarket.end_date, locale)}
+                    {t('endDate')}: {formatDate(displayMarket.end_date, locale)}
                   </p>
                 </div>
               </div>
@@ -116,7 +116,7 @@ export default function MarketDetailPage() {
                 onClick={() => setCriteriaOpen(!criteriaOpen)}
                 className="w-full flex items-center justify-between p-4 text-sm font-medium text-slate-300 hover:bg-white/5"
               >
-                Resolution Criteria
+                {t('resolutionCriteria')}
                 <ChevronDown
                   className={`h-4 w-4 transition-transform ${criteriaOpen ? 'rotate-180' : ''}`}
                 />
@@ -135,7 +135,7 @@ export default function MarketDetailPage() {
                       rel="noopener noreferrer"
                       className="flex items-center gap-1 mt-2 text-teal hover:underline"
                     >
-                      Source <ExternalLink className="h-3 w-3" />
+                      {t('source')} <ExternalLink className="h-3 w-3" />
                     </a>
                   )}
                 </motion.div>
@@ -153,14 +153,14 @@ export default function MarketDetailPage() {
 
             <div className="glass-card p-4 grid grid-cols-2 gap-3 text-sm">
               {[
-                { label: 'Volume', value: formatVolume(displayMarket.total_volume) },
-                { label: 'Liquidity', value: formatVolume(displayMarket.liquidity) },
-                { label: isKa ? 'ვადა' : 'End Date', value: formatDate(displayMarket.end_date, locale) },
-                { label: 'Status', value: displayMarket.status },
+                { label: t('volume'), value: formatVolume(displayMarket.total_volume) },
+                { label: t('liquidity'), value: formatVolume(displayMarket.liquidity) },
+                { label: t('endDate'), value: formatDate(displayMarket.end_date, locale) },
+                { label: t('status'), value: marketStatus(displayMarket.status) },
               ].map(({ label, value }) => (
                 <div key={label}>
-                  <p className="text-slate-500 text-xs">{label}</p>
-                  <p className="text-white font-medium capitalize">{value}</p>
+                  <p className={cn('text-slate-500 text-xs', isKa && 'font-georgian')}>{label}</p>
+                  <p className={cn('text-white font-medium capitalize', isKa && 'font-georgian')}>{value}</p>
                 </div>
               ))}
             </div>

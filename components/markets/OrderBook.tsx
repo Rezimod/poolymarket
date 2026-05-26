@@ -1,6 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils/cn';
+import { useLocale } from '@/lib/hooks/useLocale';
 
 interface OrderBookLevel {
   price: number;
@@ -13,6 +14,7 @@ interface OrderBookProps {
 }
 
 export function OrderBook({ yesBids, noAsks }: OrderBookProps) {
+  const { t, isKa } = useLocale();
   const maxShares = Math.max(
     ...yesBids.map((l) => l.shares),
     ...noAsks.map((l) => l.shares),
@@ -21,16 +23,18 @@ export function OrderBook({ yesBids, noAsks }: OrderBookProps) {
 
   return (
     <div className="glass-card p-4">
-      <h3 className="font-sora text-sm font-semibold text-slate-300 mb-3">Order Book</h3>
+      <h3 className={cn('font-sora text-sm font-semibold text-slate-300 mb-3', isKa && 'font-georgian')}>
+        {t('orderBook')}
+      </h3>
       <div className="grid grid-cols-2 gap-4 text-xs">
         <div>
-          <p className="text-yes font-medium mb-2">YES Bids</p>
+          <p className={cn('text-yes font-medium mb-2', isKa && 'font-georgian')}>{t('yesBids')}</p>
           {yesBids.map((level, i) => (
             <OrderRow key={i} level={level} side="yes" max={maxShares} />
           ))}
         </div>
         <div>
-          <p className="text-no font-medium mb-2">NO Bids</p>
+          <p className={cn('text-no font-medium mb-2', isKa && 'font-georgian')}>{t('noBids')}</p>
           {noAsks.map((level, i) => (
             <OrderRow key={i} level={level} side="no" max={maxShares} />
           ))}

@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import type { Trade } from '@/types';
 import { formatRelativeTime } from '@/lib/utils/format';
+import { useLocale } from '@/lib/hooks/useLocale';
 import { cn } from '@/lib/utils/cn';
 
 interface RecentTradesProps {
@@ -10,13 +11,19 @@ interface RecentTradesProps {
 }
 
 export function RecentTrades({ trades }: RecentTradesProps) {
+  const { locale, t, isKa } = useLocale();
+
   return (
     <div className="glass-card p-4">
-      <h3 className="font-sora text-sm font-semibold text-slate-300 mb-3">Recent Trades</h3>
+      <h3 className={cn('font-sora text-sm font-semibold text-slate-300 mb-3', isKa && 'font-georgian')}>
+        {t('recentTrades')}
+      </h3>
       <div className="space-y-1 max-h-48 overflow-y-auto">
         <AnimatePresence initial={false}>
           {trades.length === 0 ? (
-            <p className="text-slate-500 text-sm py-4 text-center">No trades yet</p>
+            <p className={cn('text-slate-500 text-sm py-4 text-center', isKa && 'font-georgian')}>
+              {t('noTradesYet')}
+            </p>
           ) : (
             trades.map((trade) => (
               <motion.div
@@ -29,14 +36,19 @@ export function RecentTrades({ trades }: RecentTradesProps) {
                 <span
                   className={cn(
                     'font-semibold',
-                    trade.side === 'yes' ? 'text-yes' : 'text-no'
+                    trade.side === 'yes' ? 'text-yes' : 'text-no',
+                    isKa && 'font-georgian'
                   )}
                 >
-                  {trade.side.toUpperCase()}
+                  {trade.side === 'yes' ? t('yesLabel') : t('noLabel')}
                 </span>
                 <span className="text-white">{(trade.price * 100).toFixed(1)}%</span>
-                <span className="text-slate-400">{trade.shares} shares</span>
-                <span className="text-slate-500 text-xs">{formatRelativeTime(trade.created_at)}</span>
+                <span className={cn('text-slate-400', isKa && 'font-georgian')}>
+                  {trade.shares} {isKa ? 'აქც.' : 'shares'}
+                </span>
+                <span className="text-slate-500 text-xs">
+                  {formatRelativeTime(trade.created_at, locale)}
+                </span>
               </motion.div>
             ))
           )}

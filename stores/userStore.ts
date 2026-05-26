@@ -17,7 +17,7 @@ export const useUserStore = create<UserState>()(
   persist(
     (set) => ({
       profile: null,
-      locale: 'en',
+      locale: 'ka',
       setProfile: (profile) => set({ profile }),
       updateBalance: (amount) =>
         set((state) => ({
