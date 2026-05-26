@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowRight, TrendingUp, Shield, Gift, Sparkles } from 'lucide-react';
+import { ArrowRight, TrendingUp, Shield, Gift } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { ProbabilityBar } from '@/components/markets/ProbabilityBar';
 import { LocaleToggle } from '@/components/shared/LocaleToggle';
@@ -22,58 +22,44 @@ export default function LandingPage() {
 
   return (
     <motion.div className="min-h-screen bg-base overflow-hidden">
-      <nav className="flex items-center justify-between px-6 py-4 border-b border-gold/10 relative z-10">
-        <div className="flex items-center gap-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-wine/20 text-xl border border-wine/30">
-            🇬🇪
-          </span>
-          <span className="font-sora font-bold text-xl">
-            Pooly<span className="text-gold">market</span>
-          </span>
-        </div>
-        <div className="flex items-center gap-3">
+      <nav className="flex items-center justify-between px-5 py-3 border-b border-gold/10 relative z-10">
+        <span className="font-sora font-bold text-lg">
+          🇬🇪 Pooly<span className="text-gold">market</span>
+        </span>
+        <div className="flex items-center gap-2">
           <LocaleToggle />
-          <Link
-            href="/markets"
-            className={cn('text-sm text-slate-400 hover:text-gold transition-colors', isKa && 'font-georgian')}
-          >
-            {t('markets')}
-          </Link>
           <Link href="/markets">
             <Button size="sm" className={isKa ? 'font-georgian' : ''}>
-              {t('startPredicting')}
+              {t('browseMarkets')}
             </Button>
           </Link>
         </div>
       </nav>
 
-      <section className="relative px-6 pt-16 pb-24 max-w-6xl mx-auto text-center">
+      <section className="relative px-5 pt-12 pb-10 max-w-3xl mx-auto text-center">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-wine/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gold/8 rounded-full blur-3xl" />
+          <div className="absolute top-1/3 left-1/4 w-72 h-72 bg-wine/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-1/3 right-1/4 w-72 h-72 bg-gold/8 rounded-full blur-3xl" />
         </div>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.4 }}
           className="relative z-10"
         >
-          <div
+          <p
             className={cn(
-              'inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-4 py-1.5 text-sm text-gold mb-8',
-              isKa && 'font-georgian'
+              'text-xs font-medium uppercase tracking-widest text-gold/90 mb-5',
+              isKa && 'font-georgian normal-case tracking-normal'
             )}
           >
-            <Sparkles className="h-4 w-4 shrink-0" />
-            <span>
-              {MOCK_MARKETS.length} {t('landingBadge')}
-            </span>
-          </div>
+            {MOCK_MARKETS.length} {t('landingBadge')}
+          </p>
 
           <h1
             className={cn(
-              'font-sora text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6',
+              'font-sora text-4xl sm:text-5xl md:text-6xl font-bold leading-[1.1] mb-3',
               isKa && 'font-georgian'
             )}
           >
@@ -82,100 +68,102 @@ export default function LandingPage() {
             <span className="text-gradient">{t('landingTitle2')}</span>
           </h1>
 
-          <p
-            className={cn(
-              'text-lg text-slate-400 max-w-2xl mx-auto mb-10',
-              isKa && 'font-georgian leading-relaxed'
-            )}
-          >
-            {t('landingSubtitle')}
+          <p className={cn('text-sm text-slate-500 mb-8', isKa && 'font-georgian')}>
+            {t('landingTagline')}
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/markets">
-              <Button size="lg" className={cn('gap-2', isKa && 'font-georgian')}>
-                {t('browseMarkets')} ({MOCK_MARKETS.length}) <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
-            <Link href="/leaderboard">
-              <Button variant="secondary" size="lg" className={isKa ? 'font-georgian' : ''}>
-                {t('leaderboard')}
-              </Button>
-            </Link>
-          </div>
+          <Link href="/markets">
+            <Button size="lg" className={cn('gap-2 px-8', isKa && 'font-georgian')}>
+              {t('browseMarkets')} <ArrowRight className="h-4 w-4" />
+            </Button>
+          </Link>
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
-          className="mt-14 max-w-lg mx-auto glass-card p-6 text-left border-wine/20 relative z-10"
+          transition={{ delay: 0.2, duration: 0.4 }}
+          className="mt-10 max-w-md mx-auto glass-card p-4 text-left border-wine/20 relative z-10"
         >
-          <p className={cn('text-xs text-wine font-bold uppercase tracking-wider mb-2', isKa && 'font-georgian')}>
-            🔥 {featured.image_url} {t('trending')}
-          </p>
-          <h3
-            className={cn(
-              'font-sora font-semibold text-white mb-4 line-clamp-2',
-              isKa && 'font-georgian'
-            )}
-          >
-            {featuredTitle}
-          </h3>
-          <div className="flex items-end justify-between mb-3">
-            <div>
-              <p className={cn('text-3xl font-sora font-bold text-yes')}>
-                {Math.round(featured.yes_price * 100)}%
+          <div className="flex items-start justify-between gap-3 mb-3">
+            <div className="min-w-0 flex-1">
+              <p className="text-lg leading-none mb-2">{featured.image_url}</p>
+              <p
+                className={cn(
+                  'text-sm font-semibold text-white line-clamp-2',
+                  isKa && 'font-georgian'
+                )}
+              >
+                {featuredTitle}
               </p>
-              <p className={cn('text-xs text-slate-500', isKa && 'font-georgian')}>{t('chance')}</p>
             </div>
-            <Link href={`/markets/${featured.id}`}>
-              <Button size="sm" variant="secondary" className={isKa ? 'font-georgian' : ''}>
-                {t('trade')}
-              </Button>
-            </Link>
+            <p className="font-sora text-2xl font-bold text-yes shrink-0">
+              {Math.round(featured.yes_price * 100)}%
+            </p>
           </div>
-          <ProbabilityBar yesPrice={featured.yes_price} size="lg" />
+          <ProbabilityBar yesPrice={featured.yes_price} size="sm" showLabels={false} />
         </motion.div>
+
+        <div className="mt-8 flex flex-wrap justify-center gap-2 relative z-10">
+          {[
+            { icon: TrendingUp, key: 'featureMechanics' as const },
+            { icon: Shield, key: 'featureSoul' as const },
+            { icon: Gift, key: 'featureRewards' as const },
+          ].map(({ icon: Icon, key }) => (
+            <span
+              key={key}
+              className={cn(
+                'inline-flex items-center gap-1.5 rounded-full border border-gold/15 bg-white/5 px-3 py-1.5 text-xs text-slate-400',
+                isKa && 'font-georgian'
+              )}
+            >
+              <Icon className="h-3.5 w-3.5 text-gold" />
+              {t(key)}
+            </span>
+          ))}
+        </div>
       </section>
 
-      <section className="px-6 py-12 border-t border-gold/10 relative z-10">
-        <div className="max-w-6xl mx-auto">
-          <h2
+      <section className="px-5 pb-12 relative z-10">
+        <div className="max-w-5xl mx-auto">
+          <p
             className={cn(
-              'font-sora text-2xl font-bold text-white mb-6 text-center',
-              isKa && 'font-georgian'
+              'text-xs uppercase tracking-wider text-slate-600 mb-4 text-center',
+              isKa && 'font-georgian normal-case'
             )}
           >
             {t('sampleMarkets')}
-          </h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          </p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {previewMarkets.map((m, i) => (
               <motion.div
                 key={m.id}
-                initial={{ opacity: 0, y: 12 }}
+                initial={{ opacity: 0, y: 8 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.05 }}
+                transition={{ delay: i * 0.04 }}
               >
                 <Link
                   href={`/markets/${m.id}`}
-                  className="block rounded-xl border border-gold/10 bg-elevated/60 p-4 hover:border-wine/30 transition-colors h-full"
+                  className="flex items-center gap-3 rounded-xl border border-gold/10 bg-elevated/50 px-3 py-2.5 hover:border-wine/30 transition-colors"
                 >
-                  <span className="text-2xl">{m.image_url}</span>
-                  <p
-                    className={cn(
-                      'font-medium text-white text-sm mt-2 line-clamp-2',
-                      isKa && 'font-georgian'
-                    )}
-                  >
-                    {marketTitle(m)}
-                  </p>
-                  <div className="flex justify-between mt-3 text-xs">
-                    <span className="text-yes font-bold">
-                      {Math.round(m.yes_price * 100)}% {t('yesLabel')}
-                    </span>
-                    <span className="text-slate-500">{formatVolume(m.total_volume)}</span>
+                  <span className="text-xl shrink-0">{m.image_url}</span>
+                  <div className="min-w-0 flex-1">
+                    <p
+                      className={cn(
+                        'text-sm text-white line-clamp-1',
+                        isKa && 'font-georgian'
+                      )}
+                    >
+                      {marketTitle(m)}
+                    </p>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      <span className="text-yes font-semibold">
+                        {Math.round(m.yes_price * 100)}%
+                      </span>
+                      {' · '}
+                      {formatVolume(m.total_volume)}
+                    </p>
                   </div>
                 </Link>
               </motion.div>
@@ -184,40 +172,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="px-6 py-20 border-t border-gold/10 bg-surface/40 relative z-10">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
-          {[
-            { icon: TrendingUp, titleKey: 'featureMechanics' as const, descKey: 'featureMechanicsDesc' as const },
-            { icon: Shield, titleKey: 'featureSoul' as const, descKey: 'featureSoulDesc' as const },
-            { icon: Gift, titleKey: 'featureRewards' as const, descKey: 'featureRewardsDesc' as const },
-          ].map(({ icon: Icon, titleKey, descKey }, i) => (
-            <motion.div
-              key={titleKey}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="glass-card p-6"
-            >
-              <div className="h-10 w-10 rounded-lg bg-wine/15 flex items-center justify-center mb-4">
-                <Icon className="h-5 w-5 text-gold" />
-              </div>
-              <h3 className={cn('font-sora font-semibold text-white mb-2', isKa && 'font-georgian')}>
-                {t(titleKey)}
-              </h3>
-              <p className={cn('text-sm text-slate-400', isKa && 'font-georgian leading-relaxed')}>
-                {t(descKey)}
-              </p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      <footer className="px-6 py-8 border-t border-gold/10 text-center text-sm text-slate-500 relative z-10">
+      <footer className="px-5 py-5 border-t border-gold/10 text-center text-xs text-slate-600 relative z-10">
         <p className={isKa ? 'font-georgian' : ''}>{t('footerTagline')}</p>
-        <p className={cn('mt-1', isKa && 'font-georgian')}>
-          {t('partner')} · <span className="text-gold">Astroman.ge</span>
-        </p>
       </footer>
     </motion.div>
   );
