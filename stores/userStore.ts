@@ -5,10 +5,10 @@ import { MOCK_USER } from '@/lib/data/mock';
 
 interface UserState {
   profile: Profile | null;
-  locale: 'en' | 'ka';
+  /** UI is English-only; Georgian market titles use NPLG lexicon when exposed via API */
+  locale: 'en';
   setProfile: (profile: Profile | null) => void;
   updateBalance: (amount: number) => void;
-  setLocale: (locale: 'en' | 'ka') => void;
   initDemoUser: () => void;
 }
 
@@ -24,9 +24,11 @@ export const useUserStore = create<UserState>()(
             ? { ...state.profile, lari_points: state.profile.lari_points + amount }
             : null,
         })),
-      setLocale: (locale) => set({ locale }),
       initDemoUser: () => set({ profile: MOCK_USER }),
     }),
-    { name: 'poolymarket-user' }
+    {
+      name: 'poolymarket-user',
+      partialize: (state) => ({ profile: state.profile }),
+    }
   )
 );

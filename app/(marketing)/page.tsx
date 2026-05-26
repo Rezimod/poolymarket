@@ -144,7 +144,7 @@ export default function LandingPage() {
             {
               icon: Shield,
               title: 'Georgian soul',
-              desc: 'Wine-red UI, 45 local markets, ქართული copy. Zero Silicon Valley clone energy.',
+              desc: 'Wine-red UI, 45 local markets, NPLG-standard Georgian lexicon in data. Zero clone energy.',
             },
             {
               icon: Gift,

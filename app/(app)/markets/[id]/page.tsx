@@ -16,13 +16,11 @@ import { MarketComments } from '@/components/markets/MarketComments';
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner';
 import { MOCK_MARKETS, MOCK_TRADES, getMockPriceHistory, MOCK_COMMENTS } from '@/lib/data/mock';
 import { formatVolume, formatDate } from '@/lib/utils/format';
-import { useUserStore } from '@/stores/userStore';
 import { useMarketStore } from '@/stores/marketStore';
 import type { Market } from '@/types';
 
 export default function MarketDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const locale = useUserStore((s) => s.locale);
   const { activeMarket, setActiveMarket, recentTrades, addTrade } = useMarketStore();
   const [criteriaOpen, setCriteriaOpen] = useState(false);
   const [market, setMarket] = useState<Market | null>(null);
@@ -49,10 +47,7 @@ export default function MarketDetailPage() {
     );
   }
 
-  const title =
-    locale === 'ka' && displayMarket.title_ka
-      ? displayMarket.title_ka
-      : displayMarket.title;
+  const title = displayMarket.title;
 
   const handleTrade = async () => {
     addTrade({
@@ -96,7 +91,7 @@ export default function MarketDetailPage() {
                 </div>
                 <div className="text-right text-sm text-slate-400 space-y-1">
                   <p>Vol: {formatVolume(displayMarket.total_volume)}</p>
-                  <p>Ends: {formatDate(displayMarket.end_date, locale)}</p>
+                  <p>Ends: {formatDate(displayMarket.end_date)}</p>
                 </div>
               </div>
               <ProbabilityBar yesPrice={displayMarket.yes_price} size="lg" />
@@ -148,7 +143,7 @@ export default function MarketDetailPage() {
               {[
                 { label: 'Volume', value: formatVolume(displayMarket.total_volume) },
                 { label: 'Liquidity', value: formatVolume(displayMarket.liquidity) },
-                { label: 'End Date', value: formatDate(displayMarket.end_date, locale) },
+                { label: 'End Date', value: formatDate(displayMarket.end_date) },
                 { label: 'Status', value: displayMarket.status },
               ].map(({ label, value }) => (
                 <div key={label}>

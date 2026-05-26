@@ -15,17 +15,18 @@ import type { MarketSort } from '@/lib/data/markets';
 import { useUserStore } from '@/stores/userStore';
 import { formatVolume } from '@/lib/utils/format';
 import { cn } from '@/lib/utils/cn';
+import { GWDICT_BASE } from '@/lib/utils/gwdict';
 
-const sortOptions: { value: MarketSort; label: string; labelKa: string }[] = [
-  { value: 'trending', label: 'Trending', labelKa: 'ტრენდი' },
-  { value: 'volume', label: 'Volume', labelKa: 'მოცულობა' },
-  { value: 'closing', label: 'Closing Soon', labelKa: 'მალე იხურება' },
-  { value: 'new', label: 'New', labelKa: 'ახალი' },
+const sortOptions: { value: MarketSort; label: string }[] = [
+  { value: 'trending', label: 'Trending' },
+  { value: 'volume', label: 'Volume' },
+  { value: 'closing', label: 'Closing Soon' },
+  { value: 'new', label: 'New' },
 ];
 
 export default function MarketsContent() {
   const searchParams = useSearchParams();
-  const { profile, locale, initDemoUser } = useUserStore();
+  const { profile, initDemoUser } = useUserStore();
   const [category, setCategory] = useState<string | null>(null);
   const [sort, setSort] = useState<MarketSort>('trending');
   const [search, setSearch] = useState(searchParams.get('q') ?? '');
@@ -44,7 +45,6 @@ export default function MarketsContent() {
       result = result.filter(
         (m) =>
           m.title.toLowerCase().includes(q) ||
-          (m.title_ka?.toLowerCase().includes(q) ?? false) ||
           (m.description?.toLowerCase().includes(q) ?? false)
       );
     }
@@ -73,13 +73,11 @@ export default function MarketsContent() {
       >
         <div className="mb-6 flex flex-wrap items-center gap-4 text-sm text-slate-400">
           <span>
-            <strong className="text-gold">{MOCK_MARKETS.length}</strong>{' '}
-            {locale === 'ka' ? 'აქტიური ბაზარი' : 'active markets'}
+            <strong className="text-gold">{MOCK_MARKETS.length}</strong> active markets
           </span>
           <span className="text-slate-600">·</span>
           <span>
-            <strong className="text-white">{formatVolume(totalVolume)}</strong>{' '}
-            {locale === 'ka' ? 'სულ მოცულობა' : 'total volume'}
+            <strong className="text-white">{formatVolume(totalVolume)}</strong> total volume
           </span>
         </div>
 
@@ -87,16 +85,9 @@ export default function MarketsContent() {
           <div className="relative mb-8 overflow-hidden rounded-2xl border border-wine/25 bg-gradient-to-br from-wine/20 via-elevated to-base p-6 md:p-8 cursor-pointer group hover:border-gold/40 transition-all hover:shadow-glow">
             <div className="absolute top-0 right-0 w-72 h-72 bg-gold/5 rounded-full blur-3xl" />
             <div className="absolute -left-4 top-4 text-6xl opacity-20">{featured.image_url}</div>
-            <p className="text-xs font-bold uppercase tracking-widest text-gold mb-2">
-              🔥 {locale === 'ka' ? 'ცხელი ბაზარი' : 'Trending now'}
-            </p>
-            <h2
-              className={cn(
-                'font-sora text-xl md:text-2xl font-bold text-white mb-4 max-w-2xl group-hover:text-gold transition-colors relative z-10',
-                locale === 'ka' && 'font-georgian'
-              )}
-            >
-              {locale === 'ka' && featured.title_ka ? featured.title_ka : featured.title}
+            <p className="text-xs font-bold uppercase tracking-widest text-gold mb-2">🔥 Trending now</p>
+            <h2 className="font-sora text-xl md:text-2xl font-bold text-white mb-4 max-w-2xl group-hover:text-gold transition-colors relative z-10">
+              {featured.title}
             </h2>
             <div className="flex items-end gap-6 mb-4 relative z-10">
               <div>
@@ -113,11 +104,7 @@ export default function MarketsContent() {
           </div>
         </Link>
 
-        <CategoryFilter
-          categories={MOCK_CATEGORIES}
-          active={category}
-          onChange={setCategory}
-        />
+        <CategoryFilter categories={MOCK_CATEGORIES} active={category} onChange={setCategory} />
 
         <div className="flex gap-2 mt-4 mb-6 overflow-x-auto">
           {sortOptions.map((opt) => (
@@ -131,20 +118,33 @@ export default function MarketsContent() {
                   : 'border-transparent text-slate-500 hover:text-white hover:bg-white/5'
               )}
             >
-              {locale === 'ka' ? opt.labelKa : opt.label}
+              {opt.label}
             </button>
           ))}
           <span className="ml-auto shrink-0 self-center text-xs text-slate-600">
-            {markets.length} {locale === 'ka' ? 'შედეგი' : 'results'}
+            {markets.length} results
           </span>
         </div>
 
         <MarketFeed markets={markets} />
 
+        <p className="mt-10 text-center text-xs text-slate-600">
+          Georgian lexical data aligned with{' '}
+          <a
+            href={GWDICT_BASE}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gold hover:underline"
+          >
+            NPLG gwdict
+          </a>{' '}
+          (დიდი ქართულ-ინგლისური ლექსიკონი)
+        </p>
+
         {!profile && (
           <div className="fixed bottom-20 lg:bottom-6 left-1/2 -translate-x-1/2 z-40">
             <Button size="lg" onClick={initDemoUser} className="shadow-glow-gold">
-              {locale === 'ka' ? 'დაიწყე — 1,000 ₾P უფასოდ' : 'Predict Now — Get 1,000 ₾P Free'}
+              Predict Now — Get 1,000 ₾P Free
             </Button>
           </div>
         )}

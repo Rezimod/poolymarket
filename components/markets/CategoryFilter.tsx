@@ -3,8 +3,6 @@
 import { motion } from 'framer-motion';
 import type { Category } from '@/types';
 import { cn } from '@/lib/utils/cn';
-import { useUserStore } from '@/stores/userStore';
-
 interface CategoryFilterProps {
   categories: Category[];
   active: string | null;
@@ -12,13 +10,11 @@ interface CategoryFilterProps {
 }
 
 export function CategoryFilter({ categories, active, onChange }: CategoryFilterProps) {
-  const locale = useUserStore((s) => s.locale);
-
   const pills = [
-    { slug: null, name: locale === 'ka' ? 'ყველა' : 'All', icon: '✨', color: '#D4A843' },
+    { slug: null, name: 'All', icon: '✨', color: '#D4A843' },
     ...categories.map((c) => ({
       slug: c.slug,
-      name: locale === 'ka' ? c.name_ka : c.name,
+      name: c.name,
       icon: c.icon,
       color: c.color,
     })),

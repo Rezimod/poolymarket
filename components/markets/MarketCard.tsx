@@ -7,9 +7,7 @@ import { CategoryBadge } from '@/components/shared/CategoryBadge';
 import { ProbabilityBar } from './ProbabilityBar';
 import { CountUp } from '@/components/shared/CountUp';
 import { formatVolume, formatDate } from '@/lib/utils/format';
-import { useUserStore } from '@/stores/userStore';
 import { Clock, TrendingUp } from 'lucide-react';
-import { cn } from '@/lib/utils/cn';
 
 interface MarketCardProps {
   market: Market;
@@ -17,8 +15,7 @@ interface MarketCardProps {
 }
 
 export function MarketCard({ market, index = 0 }: MarketCardProps) {
-  const locale = useUserStore((s) => s.locale);
-  const title = locale === 'ka' && market.title_ka ? market.title_ka : market.title;
+  const title = market.title;
   const yesCents = Math.round(market.yes_price * 100);
   const noCents = 100 - yesCents;
   const isHot = market.total_volume > 150000;
@@ -47,12 +44,7 @@ export function MarketCard({ market, index = 0 }: MarketCardProps) {
             )}
           </div>
 
-          <h3
-            className={cn(
-              'font-sora line-clamp-3 text-[15px] font-semibold leading-snug text-white group-hover:text-gold transition-colors',
-              locale === 'ka' && 'font-georgian'
-            )}
-          >
+          <h3 className="font-sora line-clamp-3 text-[15px] font-semibold leading-snug text-white group-hover:text-gold transition-colors">
             {title}
           </h3>
 
@@ -70,7 +62,7 @@ export function MarketCard({ market, index = 0 }: MarketCardProps) {
               </div>
               <div className="flex items-center gap-1 justify-end">
                 <Clock className="h-3 w-3" />
-                {formatDate(market.end_date, locale)}
+                {formatDate(market.end_date)}
               </div>
             </div>
           </div>

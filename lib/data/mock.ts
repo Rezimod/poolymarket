@@ -52,9 +52,9 @@ export function getMockPriceHistory(marketId: string): PriceHistoryPoint[] {
 }
 
 export const MOCK_COMMENTS: Comment[] = [
-  { id: 'c1', market_id: 'm11', user_id: 'u2', content: 'ეს ბაზარი არის ჩემი პირადი რელიგია 🙏', likes: 47, created_at: new Date(Date.now() - 3600000).toISOString(), profile: { id: 'u2', username: 'tbilisi_trader', avatar_url: null, lari_points: 5000, total_volume: 20000, total_pnl: 1200, rank: 'Expert', created_at: '' } },
-  { id: 'c2', market_id: 'm22', user_id: 'u3', content: 'თუ ერთხელ მაინც იმუშავებს, ვიყიდი YES-ს 10,000-ად', likes: 89, created_at: new Date(Date.now() - 7200000).toISOString(), profile: { id: 'u3', username: 'caucasus_capital', avatar_url: null, lari_points: 12000, total_volume: 80000, total_pnl: 5600, rank: 'Master', created_at: '' } },
-  { id: 'c3', market_id: 'm1', user_id: 'u4', content: 'გუნდი ძლიერია, მაგრამ ჯგუფი რთულია 🇬🇪', likes: 12, created_at: new Date(Date.now() - 10800000).toISOString(), profile: { id: 'u4', username: 'kakhuri_bull', avatar_url: null, lari_points: 8000, total_volume: 45000, total_pnl: 2100, rank: 'Expert', created_at: '' } },
+  { id: 'c1', market_id: 'm11', user_id: 'u2', content: 'This market is my personal religion 🙏', likes: 47, created_at: new Date(Date.now() - 3600000).toISOString(), profile: { id: 'u2', username: 'tbilisi_trader', avatar_url: null, lari_points: 5000, total_volume: 20000, total_pnl: 1200, rank: 'Expert', created_at: '' } },
+  { id: 'c2', market_id: 'm22', user_id: 'u3', content: 'If it works even once I am buying YES for 10,000', likes: 89, created_at: new Date(Date.now() - 7200000).toISOString(), profile: { id: 'u3', username: 'caucasus_capital', avatar_url: null, lari_points: 12000, total_volume: 80000, total_pnl: 5600, rank: 'Master', created_at: '' } },
+  { id: 'c3', market_id: 'm1', user_id: 'u4', content: 'Strong squad but a brutal group 🇬🇪', likes: 12, created_at: new Date(Date.now() - 10800000).toISOString(), profile: { id: 'u4', username: 'kakhuri_bull', avatar_url: null, lari_points: 8000, total_volume: 45000, total_pnl: 2100, rank: 'Expert', created_at: '' } },
 ];
 
 export const MOCK_LEADERBOARD: LeaderboardEntry[] = [

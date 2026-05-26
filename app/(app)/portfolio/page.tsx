@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils/cn';
 import { TrendingUp, TrendingDown, Gift } from 'lucide-react';
 
 export default function PortfolioPage() {
-  const { profile, locale, initDemoUser } = useUserStore();
+  const { profile, initDemoUser } = useUserStore();
 
   if (!profile) {
     return (
@@ -46,11 +46,11 @@ export default function PortfolioPage() {
       >
         <div className="grid sm:grid-cols-3 gap-4">
           {[
-            { label: 'Balance', value: formatLariPoints(profile.lari_points, locale), color: 'text-teal' },
-            { label: 'Portfolio Value', value: formatLariPoints(totalValue, locale), color: 'text-white' },
+            { label: 'Balance', value: formatLariPoints(profile.lari_points), color: 'text-teal' },
+            { label: 'Portfolio Value', value: formatLariPoints(totalValue), color: 'text-white' },
             {
               label: 'Unrealized PnL',
-              value: `${unrealizedPnl >= 0 ? '+' : ''}${formatLariPoints(unrealizedPnl, locale)}`,
+              value: `${unrealizedPnl >= 0 ? '+' : ''}${formatLariPoints(unrealizedPnl)}`,
               color: unrealizedPnl >= 0 ? 'text-yes' : 'text-no',
             },
           ].map(({ label, value, color }) => (
@@ -70,10 +70,7 @@ export default function PortfolioPage() {
               const value = Math.floor(pos.shares * mktPrice * 100);
               const cost = Math.floor(pos.shares * pos.avg_price * 100);
               const pnl = value - cost;
-              const title =
-                locale === 'ka' && pos.market?.title_ka
-                  ? pos.market.title_ka
-                  : pos.market?.title;
+              const title = pos.market?.title;
 
               return (
                 <Link key={pos.id} href={`/markets/${pos.market_id}`}>
@@ -91,16 +88,16 @@ export default function PortfolioPage() {
                         <p className="font-medium text-white mt-1 line-clamp-2">{title}</p>
                       </div>
                       <div className="text-right shrink-0">
-                        <p className="font-semibold text-white">{formatLariPoints(value, locale)}</p>
+                        <p className="font-semibold text-white">{formatLariPoints(value)}</p>
                         <p className={cn('text-sm flex items-center gap-0.5 justify-end', pnl >= 0 ? 'text-yes' : 'text-no')}>
                           {pnl >= 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
-                          {pnl >= 0 ? '+' : ''}{formatLariPoints(pnl, locale)}
+                          {pnl >= 0 ? '+' : ''}{formatLariPoints(pnl)}
                         </p>
                       </div>
                     </div>
                     <div className="flex justify-between text-xs text-slate-500 mb-2">
                       <span>{pos.shares} shares @ {(pos.avg_price * 100).toFixed(0)}%</span>
-                      <span>Ends {pos.market ? formatDate(pos.market.end_date, locale) : ''}</span>
+                      <span>Ends {pos.market ? formatDate(pos.market.end_date) : ''}</span>
                     </div>
                     {pos.market && <ProbabilityBar yesPrice={pos.market.yes_price} size="sm" showLabels={false} />}
                   </div>

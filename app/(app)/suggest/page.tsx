@@ -9,7 +9,7 @@ import { MOCK_CATEGORIES } from '@/lib/data/mock';
 import { useUserStore } from '@/stores/userStore';
 
 export default function SuggestPage() {
-  const { locale, initDemoUser, profile } = useUserStore();
+  const { initDemoUser, profile } = useUserStore();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
@@ -51,14 +51,8 @@ export default function SuggestPage() {
         animate={{ opacity: 1, y: 0 }}
         className="flex-1 p-4 lg:p-6 max-w-lg mx-auto w-full"
       >
-        <h1 className="font-sora text-2xl font-bold text-white mb-2">
-          {locale === 'ka' ? 'ბაზრის შემოთავაზება' : 'Suggest a Market'}
-        </h1>
-        <p className="text-slate-400 text-sm mb-6">
-          {locale === 'ka'
-            ? 'რა მოვლენაზე გსურთ პროგნოზის გაკეთება?'
-            : 'What event should Georgia be predicting on?'}
-        </p>
+        <h1 className="font-sora text-2xl font-bold text-white mb-2">Suggest a Market</h1>
+        <p className="text-slate-400 text-sm mb-6">What event should Georgia be predicting on?</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -94,7 +88,7 @@ export default function SuggestPage() {
               <option value="">Select category</option>
               {MOCK_CATEGORIES.map((c) => (
                 <option key={c.id} value={c.slug}>
-                  {c.icon} {locale === 'ka' ? c.name_ka : c.name}
+                  {c.icon} {c.name}
                 </option>
               ))}
             </select>

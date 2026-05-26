@@ -13,7 +13,7 @@ import { Crown, Medal } from 'lucide-react';
 type Period = 'weekly' | 'monthly' | 'alltime';
 
 export default function LeaderboardPage() {
-  const { profile, locale } = useUserStore();
+  const { profile } = useUserStore();
   const [period, setPeriod] = useState<Period>('weekly');
   const entries = MOCK_LEADERBOARD;
 
@@ -34,12 +34,8 @@ export default function LeaderboardPage() {
         animate={{ opacity: 1, y: 0 }}
         className="flex-1 p-4 lg:p-6 max-w-3xl mx-auto w-full"
       >
-        <h1 className="font-sora text-2xl font-bold text-white mb-2">
-          {locale === 'ka' ? 'ლიდერბორდი' : 'Leaderboard'}
-        </h1>
-        <p className="text-slate-400 text-sm mb-6">
-          {locale === 'ka' ? 'საუკეთესო პროგნოზისტები' : 'Top predictors by volume and PnL'}
-        </p>
+        <h1 className="font-sora text-2xl font-bold text-white mb-2">Rankings</h1>
+        <p className="text-slate-400 text-sm mb-6">Top predictors by volume and PnL</p>
 
         <div className="flex gap-2 mb-6">
           {(['weekly', 'monthly', 'alltime'] as Period[]).map((p) => (
@@ -74,7 +70,7 @@ export default function LeaderboardPage() {
                 <UserAvatar username={entry.profile.username} size="lg" className="mx-auto mb-2" />
                 <p className="font-semibold text-white text-sm truncate">@{entry.profile.username}</p>
                 <p className="text-teal font-bold text-sm mt-1">
-                  {formatLariPoints(entry.pnl, locale)}
+                  {formatLariPoints(entry.pnl)}
                 </p>
                 <p className="text-xs text-slate-500">{formatVolume(entry.volume)} vol</p>
               </motion.div>
@@ -99,7 +95,7 @@ export default function LeaderboardPage() {
                 <p className="text-xs text-slate-500">{entry.profile.rank}</p>
               </div>
               <div className="text-right text-sm">
-                <p className="text-teal font-semibold">{formatLariPoints(entry.pnl, locale)}</p>
+                <p className="text-teal font-semibold">{formatLariPoints(entry.pnl)}</p>
                 <p className="text-slate-500 text-xs">{(entry.win_rate * 100).toFixed(0)}% win</p>
               </div>
             </div>
@@ -113,7 +109,7 @@ export default function LeaderboardPage() {
               <UserAvatar username={profile.username} size="sm" />
               <div className="flex-1">
                 <p className="text-sm font-medium text-white">You</p>
-                <p className="text-xs text-teal">{formatLariPoints(userEntry.pnl, locale)}</p>
+                <p className="text-xs text-teal">{formatLariPoints(userEntry.pnl)}</p>
               </div>
             </div>
           </div>

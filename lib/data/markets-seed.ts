@@ -1,4 +1,5 @@
 import type { Category, Market } from '@/types';
+import { MARKET_TITLES_KA } from './markets-ka-nplg';
 
 export const SEED_CATEGORIES: Category[] = [
   { id: '1', name: 'Politics', name_ka: 'პოლიტიკა', slug: 'georgian-politics', icon: '🏛️', color: '#B91C3C' },
@@ -7,9 +8,9 @@ export const SEED_CATEGORIES: Category[] = [
   { id: '4', name: 'Culture', name_ka: 'კულტურა', slug: 'culture', icon: '🎭', color: '#7C3AED' },
   { id: '5', name: 'Global', name_ka: 'გლობალური', slug: 'global', icon: '🌍', color: '#2563EB' },
   { id: '6', name: 'Weather', name_ka: 'ამინდი', slug: 'weather', icon: '🌤️', color: '#0891B2' },
-  { id: '7', name: 'Absurd & Memes', name_ka: 'აბსურდი & მემები', slug: 'absurd', icon: '🤡', color: '#DB2777' },
+  { id: '7', name: 'Unusual & Comic', name_ka: 'უჩვეულო და სასაცილო', slug: 'absurd', icon: '🤡', color: '#DB2777' },
   { id: '8', name: 'Daily Life', name_ka: 'ყოველდღიური', slug: 'daily-life', icon: '🥖', color: '#EA580C' },
-  { id: '9', name: 'Speculative', name_ka: 'სპეკულაციური', slug: 'speculative', icon: '🔮', color: '#6366F1' },
+  { id: '9', name: 'Speculative', name_ka: 'სავარაუდო', slug: 'speculative', icon: '🔮', color: '#6366F1' },
 ];
 
 function cat(slug: string): Category {
@@ -37,8 +38,10 @@ type MarketSeed = {
 function market(partial: MarketSeed): Market {
   const { categorySlug, image_url, resolution_source, ...rest } = partial;
   const category = cat(categorySlug);
+  const title_ka = MARKET_TITLES_KA[rest.id] ?? rest.title_ka;
   return {
     ...rest,
+    title_ka,
     category_id: category.id,
     category,
     creator_id: null,

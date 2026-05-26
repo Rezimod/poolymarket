@@ -16,15 +16,15 @@ import { formatLariPoints } from '@/lib/utils/format';
 import { MOCK_MARKETS } from '@/lib/data/mock';
 
 const navItems = [
-  { href: '/markets', label: 'Markets', labelKa: 'ბაზრები', icon: TrendingUp },
-  { href: '/portfolio', label: 'Portfolio', labelKa: 'პორტფელი', icon: Briefcase },
-  { href: '/leaderboard', label: 'Leaderboard', labelKa: 'ლიდერბორდი', icon: Trophy },
-  { href: '/suggest', label: 'Suggest', labelKa: 'შემოთავაზება', icon: Lightbulb },
+  { href: '/markets', label: 'Markets', icon: TrendingUp },
+  { href: '/portfolio', label: 'Portfolio', icon: Briefcase },
+  { href: '/leaderboard', label: 'Rankings', icon: Trophy },
+  { href: '/suggest', label: 'Suggest', icon: Lightbulb },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
-  const { profile, locale } = useUserStore();
+  const { profile } = useUserStore();
 
   return (
     <aside className="hidden lg:flex w-64 flex-col border-r border-gold/10 bg-surface/80 backdrop-blur-xl h-screen sticky top-0">
@@ -42,7 +42,7 @@ export function Sidebar() {
       </div>
 
       <nav className="flex-1 p-3 space-y-1">
-        {navItems.map(({ href, label, labelKa, icon: Icon }) => {
+        {navItems.map(({ href, label, icon: Icon }) => {
           const active = pathname.startsWith(href);
           return (
             <Link key={href} href={href}>
@@ -60,7 +60,7 @@ export function Sidebar() {
                   />
                 )}
                 <Icon className="relative h-4 w-4" />
-                <span className="relative">{locale === 'ka' ? labelKa : label}</span>
+                <span className="relative">{label}</span>
               </div>
             </Link>
           );
@@ -70,9 +70,9 @@ export function Sidebar() {
       {profile && (
         <div className="p-4 border-t border-gold/10">
           <div className="glass-card p-3 border-gold/15">
-            <p className="text-xs text-slate-500 mb-1">{locale === 'ka' ? 'ბალანსი' : 'Balance'}</p>
+            <p className="text-xs text-slate-500 mb-1">Balance</p>
             <p className="font-sora font-bold text-gold text-lg">
-              {formatLariPoints(profile.lari_points, locale)}
+              {formatLariPoints(profile.lari_points)}
             </p>
             <p className="text-xs text-slate-500 mt-1">{profile.rank}</p>
           </div>
@@ -81,7 +81,7 @@ export function Sidebar() {
             className="mt-2 flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-400 hover:text-white hover:bg-white/5"
           >
             <User className="h-4 w-4" />
-            {locale === 'ka' ? 'პროფილი' : 'Profile'}
+            Profile
           </Link>
         </div>
       )}
