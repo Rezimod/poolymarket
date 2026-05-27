@@ -26,7 +26,7 @@ export function TopBar({ onSearch }: TopBarProps) {
   };
 
   return (
-    <header className="sticky top-0 z-40 flex items-center gap-4 border-b border-gold/10 bg-base/90 backdrop-blur-xl px-4 py-3 lg:px-6">
+    <header className="sticky top-0 z-40 flex items-center gap-4 border-b border-white/5 bg-base/95 backdrop-blur-xl px-4 py-3 lg:px-8">
       <form onSubmit={handleSearch} className="flex-1 max-w-xl">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
@@ -37,7 +37,7 @@ export function TopBar({ onSearch }: TopBarProps) {
               onSearch?.(e.target.value);
             }}
             placeholder={t('searchMarkets')}
-            className="w-full rounded-lg bg-white/5 border border-gold/10 pl-10 pr-4 py-2 text-sm text-white placeholder:text-slate-600 focus:border-wine/50 focus:outline-none focus:ring-1 focus:ring-wine/30"
+            className="w-full rounded-md bg-white/[0.03] border border-white/5 pl-10 pr-4 py-2 text-sm text-white placeholder:text-slate-600 focus:border-gold/30 focus:outline-none focus:ring-1 focus:ring-gold/20"
           />
         </div>
       </form>

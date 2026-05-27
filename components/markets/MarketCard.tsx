@@ -8,7 +8,6 @@ import { ProbabilityBar } from './ProbabilityBar';
 import { CountUp } from '@/components/shared/CountUp';
 import { formatVolume, formatDate } from '@/lib/utils/format';
 import { useLocale } from '@/lib/hooks/useLocale';
-import { Clock, TrendingUp } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 
 interface MarketCardProps {
@@ -21,30 +20,23 @@ export function MarketCard({ market, index = 0 }: MarketCardProps) {
   const title = marketTitle(market);
   const yesCents = Math.round(market.yes_price * 100);
   const noCents = 100 - yesCents;
-  const isHot = market.total_volume > 150000;
+  const isActive = market.total_volume > 150000;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: Math.min(index * 0.03, 0.4), duration: 0.3 }}
+      transition={{ delay: Math.min(index * 0.025, 0.35), duration: 0.35 }}
     >
-      <div className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-gold/10 bg-elevated/80 p-4 transition-all hover:border-wine/30 hover:shadow-glow">
-        <Link href={`/markets/${market.id}`} className="flex flex-1 flex-col gap-3">
-          <div className="flex items-start justify-between gap-2">
-            <div className="flex items-center gap-2 min-w-0">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/5 text-xl">
-                {market.image_url ?? '📊'}
-              </span>
-              <div className="min-w-0">
-                {market.category && <CategoryBadge category={market.category} />}
-              </div>
-            </div>
-            {isHot && (
+      <div className="group premium-card flex h-full flex-col overflow-hidden p-5 transition-all hover:shadow-premium">
+        <Link href={`/markets/${market.id}`} className="flex flex-1 flex-col gap-4">
+          <div className="flex items-center justify-between gap-2">
+            {market.category && <CategoryBadge category={market.category} />}
+            {isActive && (
               <span
                 className={cn(
-                  'shrink-0 rounded-full bg-wine/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-wine',
-                  isKa && 'font-georgian normal-case'
+                  'text-[10px] uppercase tracking-widest text-gold/80',
+                  isKa && 'font-georgian normal-case tracking-normal'
                 )}
               >
                 {t('hot')}
@@ -54,47 +46,47 @@ export function MarketCard({ market, index = 0 }: MarketCardProps) {
 
           <h3
             className={cn(
-              'font-sora line-clamp-3 text-[15px] font-semibold leading-snug text-white group-hover:text-gold transition-colors',
-              isKa && 'font-georgian'
+              'font-sora line-clamp-3 text-[15px] font-medium leading-snug text-white/95 group-hover:text-gold transition-colors',
+              isKa && 'font-georgian font-normal'
             )}
           >
             {title}
           </h3>
 
-          <div className="flex items-end justify-between">
+          <div className="flex items-end justify-between border-t border-white/5 pt-4">
             <div>
-              <p className={cn('text-[10px] uppercase tracking-wider text-slate-500 mb-0.5', isKa && 'font-georgian')}>
+              <p className={cn('text-[10px] uppercase tracking-widest text-slate-600 mb-1', isKa && 'font-georgian')}>
                 {t('chance')}
               </p>
-              <p className="font-sora text-2xl font-bold text-yes">
+              <p className="font-sora text-2xl font-semibold text-yes tabular-nums">
                 <CountUp value={market.yes_price * 100} decimals={0} />%
               </p>
             </div>
-            <div className="text-right text-xs text-slate-500 space-y-1">
-              <div className="flex items-center gap-1 justify-end">
-                <TrendingUp className="h-3 w-3 text-gold/70" />
-                {formatVolume(market.total_volume)}
-              </div>
-              <div className="flex items-center gap-1 justify-end">
-                <Clock className="h-3 w-3" />
-                {formatDate(market.end_date, locale)}
-              </div>
+            <div className="text-right text-[11px] text-slate-500 tabular-nums space-y-1">
+              <p>{formatVolume(market.total_volume)}</p>
+              <p>{formatDate(market.end_date, locale)}</p>
             </div>
           </div>
 
-          <ProbabilityBar yesPrice={market.yes_price} size="sm" />
+          <ProbabilityBar yesPrice={market.yes_price} size="sm" showLabels={false} />
         </Link>
 
-        <div className="mt-3 grid grid-cols-2 gap-2">
+        <div className="mt-4 grid grid-cols-2 gap-2">
           <Link
             href={`/markets/${market.id}?side=yes`}
-            className="rounded-lg border border-yes/30 bg-yes/10 py-2 text-center text-sm font-semibold text-yes hover:bg-yes/20 transition-colors"
+            className={cn(
+              'rounded-md border border-yes/20 bg-yes/5 py-2 text-center text-xs font-medium text-yes hover:bg-yes/10 transition-colors',
+              isKa && 'font-georgian'
+            )}
           >
             {t('yesLabel')} {yesCents}¢
           </Link>
           <Link
             href={`/markets/${market.id}?side=no`}
-            className="rounded-lg border border-no/30 bg-no/10 py-2 text-center text-sm font-semibold text-no hover:bg-no/20 transition-colors"
+            className={cn(
+              'rounded-md border border-no/20 bg-no/5 py-2 text-center text-xs font-medium text-no hover:bg-no/10 transition-colors',
+              isKa && 'font-georgian'
+            )}
           >
             {t('noLabel')} {noCents}¢
           </Link>

@@ -8,15 +8,20 @@ import { TopBar } from '@/components/layout/TopBar';
 import { MarketTicker } from '@/components/markets/MarketTicker';
 import { CategoryFilter } from '@/components/markets/CategoryFilter';
 import { MarketFeed } from '@/components/markets/MarketFeed';
+import { CategoryBadge } from '@/components/shared/CategoryBadge';
 import { ProbabilityBar } from '@/components/markets/ProbabilityBar';
 import { Button } from '@/components/ui/Button';
 import { MOCK_MARKETS, MOCK_CATEGORIES } from '@/lib/data/mock';
 import type { MarketSort } from '@/lib/data/markets';
+import {
+  ALL_MARKETS_FILTER,
+  filterSeriousMarkets,
+  getPrimaryFeaturedMarket,
+} from '@/lib/data/market-tiers';
 import { useUserStore } from '@/stores/userStore';
 import { useLocale } from '@/lib/hooks/useLocale';
 import { formatVolume } from '@/lib/utils/format';
 import { cn } from '@/lib/utils/cn';
-import { GWDICT_BASE } from '@/lib/utils/gwdict';
 
 const sortKeys: { value: MarketSort; key: 'sortTrending' | 'sortVolume' | 'sortClosing' | 'sortNew' }[] = [
   { value: 'trending', key: 'sortTrending' },
@@ -37,14 +42,19 @@ export default function MarketsContent() {
     setSearch(searchParams.get('q') ?? '');
   }, [searchParams]);
 
-  const featured =
-    MOCK_MARKETS.find((m) => m.is_featured && m.id === 'm11') ??
-    MOCK_MARKETS.find((m) => m.is_featured) ??
-    MOCK_MARKETS[0];
+  const featured = getPrimaryFeaturedMarket(MOCK_MARKETS);
+  const seriousMarkets = filterSeriousMarkets(MOCK_MARKETS);
+  const seriousVolume = seriousMarkets.reduce((s, m) => s + m.total_volume, 0);
 
   const markets = useMemo(() => {
     let result = [...MOCK_MARKETS];
-    if (category) result = result.filter((m) => m.category?.slug === category);
+
+    if (category === null) {
+      result = filterSeriousMarkets(result);
+    } else if (category !== ALL_MARKETS_FILTER) {
+      result = result.filter((m) => m.category?.slug === category);
+    }
+
     if (search) {
       const q = search.toLowerCase();
       result = result.filter(
@@ -54,6 +64,7 @@ export default function MarketsContent() {
           (m.description?.toLowerCase().includes(q) ?? false)
       );
     }
+
     switch (sort) {
       case 'volume':
         return result.sort((a, b) => b.total_volume - a.total_volume);
@@ -66,100 +77,90 @@ export default function MarketsContent() {
     }
   }, [category, search, sort]);
 
-  const totalVolume = MOCK_MARKETS.reduce((s, m) => s + m.total_volume, 0);
-
   return (
     <>
       <TopBar onSearch={setSearch} />
-      <MarketTicker markets={MOCK_MARKETS} />
+      <MarketTicker markets={seriousMarkets} />
       <motion.main
-        initial={{ opacity: 0, y: 12 }}
+        initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex-1 p-4 lg:p-6 max-w-7xl mx-auto w-full"
+        className="flex-1 p-4 lg:p-8 max-w-7xl mx-auto w-full"
       >
-        <div className="mb-6 flex flex-wrap items-center gap-4 text-sm text-slate-400">
-          <span>
-            <strong className="text-gold">{MOCK_MARKETS.length}</strong> {t('activeMarkets')}
+        <div className="mb-8 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs uppercase tracking-widest text-slate-600">
+          <span className={isKa ? 'font-georgian normal-case' : ''}>
+            <span className="text-gold tabular-nums">{seriousMarkets.length}</span> {t('activeMarkets')}
           </span>
-          <span className="text-slate-600">·</span>
-          <span>
-            <strong className="text-white">{formatVolume(totalVolume)}</strong> {t('totalVolume')}
+          <span className="hidden sm:inline text-white/10">|</span>
+          <span className={cn('tabular-nums', isKa && 'font-georgian normal-case')}>
+            <span className="text-slate-400">{formatVolume(seriousVolume)}</span> {t('totalVolume')}
           </span>
         </div>
 
         <Link href={`/markets/${featured.id}`}>
-          <div className="relative mb-8 overflow-hidden rounded-2xl border border-wine/25 bg-gradient-to-br from-wine/20 via-elevated to-base p-6 md:p-8 cursor-pointer group hover:border-gold/40 transition-all hover:shadow-glow">
-            <div className="absolute top-0 right-0 w-72 h-72 bg-gold/5 rounded-full blur-3xl" />
-            <div className="absolute -left-4 top-4 text-6xl opacity-20">{featured.image_url}</div>
-            <p className="text-xs font-bold uppercase tracking-widest text-gold mb-2">
-              🔥 {t('trending')}
-            </p>
-            <h2
-              className={cn(
-                'font-sora text-xl md:text-2xl font-bold text-white mb-4 max-w-2xl group-hover:text-gold transition-colors relative z-10',
-                isKa && 'font-georgian'
+          <div className="premium-card relative mb-10 overflow-hidden p-6 md:p-8 cursor-pointer group hover:shadow-premium transition-shadow">
+            <div className="absolute inset-0 bg-gradient-to-br from-wine/5 via-transparent to-gold/5 pointer-events-none" />
+            <div className="relative z-10">
+              {featured.category && (
+                <div className="mb-4">
+                  <CategoryBadge category={featured.category} />
+                </div>
               )}
-            >
-              {marketTitle(featured)}
-            </h2>
-            <div className="flex items-end gap-6 mb-4 relative z-10">
-              <div>
-                <p className="text-4xl md:text-5xl font-sora font-bold text-yes">
-                  {Math.round(featured.yes_price * 100)}%
-                </p>
-                <p className="text-sm text-slate-500">{t('chance')}</p>
-              </div>
-              <div className="text-sm text-slate-400">
-                <p>
+              <p className={cn('text-[10px] uppercase tracking-[0.2em] text-gold/70 mb-3', isKa && 'font-georgian')}>
+                {t('trending')}
+              </p>
+              <h2
+                className={cn(
+                  'font-sora text-xl md:text-2xl font-medium text-white mb-6 max-w-3xl group-hover:text-gold/90 transition-colors leading-snug',
+                  isKa && 'font-georgian font-normal'
+                )}
+              >
+                {marketTitle(featured)}
+              </h2>
+              <div className="flex items-end gap-8 mb-5">
+                <div>
+                  <p className="font-sora text-4xl md:text-5xl font-semibold text-yes tabular-nums">
+                    {Math.round(featured.yes_price * 100)}%
+                  </p>
+                  <p className={cn('text-xs text-slate-600 mt-1', isKa && 'font-georgian')}>{t('chance')}</p>
+                </div>
+                <p className={cn('text-sm text-slate-500 tabular-nums pb-1', isKa && 'font-georgian')}>
                   {formatVolume(featured.total_volume)} {t('volume')}
                 </p>
               </div>
+              <ProbabilityBar yesPrice={featured.yes_price} size="md" />
             </div>
-            <ProbabilityBar yesPrice={featured.yes_price} size="lg" />
           </div>
         </Link>
 
         <CategoryFilter categories={MOCK_CATEGORIES} active={category} onChange={setCategory} />
 
-        <div className="flex gap-2 mt-4 mb-6 overflow-x-auto">
+        <div className="flex gap-2 mt-6 mb-8 overflow-x-auto">
           {sortKeys.map((opt) => (
             <button
               key={opt.value}
               type="button"
               onClick={() => setSort(opt.value)}
               className={cn(
-                'shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors border',
+                'shrink-0 rounded-full px-3 py-1.5 text-[11px] font-medium uppercase tracking-wide transition-colors border',
                 sort === opt.value
-                  ? 'bg-gold/20 border-gold/40 text-gold'
-                  : 'border-transparent text-slate-500 hover:text-white hover:bg-white/5',
-                isKa && 'font-georgian'
+                  ? 'border-gold/30 bg-gold/10 text-gold'
+                  : 'border-transparent text-slate-600 hover:text-slate-300',
+                isKa && 'font-georgian normal-case'
               )}
             >
               {t(opt.key)}
             </button>
           ))}
-          <span className={cn('ml-auto shrink-0 self-center text-xs text-slate-600', isKa && 'font-georgian')}>
+          <span className={cn('ml-auto shrink-0 self-center text-xs text-slate-600 tabular-nums', isKa && 'font-georgian')}>
             {markets.length} {t('results')}
           </span>
         </div>
 
         <MarketFeed markets={markets} />
 
-        <p className={cn('mt-10 text-center text-xs text-slate-600', isKa && 'font-georgian')}>
-          {t('nplgNote')}{' '}
-          <a
-            href={GWDICT_BASE}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-gold hover:underline"
-          >
-            {t('nplgLink')}
-          </a>
-        </p>
-
         {!profile && (
           <div className="fixed bottom-20 lg:bottom-6 left-1/2 -translate-x-1/2 z-40">
-            <Button size="lg" onClick={initDemoUser} className="shadow-glow-gold">
+            <Button size="lg" onClick={initDemoUser} className={cn('shadow-glow-gold', isKa && 'font-georgian')}>
               {t('startFree')}
             </Button>
           </div>

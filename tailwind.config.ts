@@ -9,16 +9,16 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        base: '#0C0809',
-        surface: '#161012',
-        elevated: '#21161A',
+        base: '#060506',
+        surface: '#0E0A0C',
+        elevated: '#161114',
         wine: {
-          DEFAULT: '#C41E3A',
-          dim: 'rgba(196, 30, 58, 0.18)',
+          DEFAULT: '#9E1A32',
+          dim: 'rgba(158, 26, 50, 0.12)',
         },
         gold: {
-          DEFAULT: '#D4A843',
-          dim: 'rgba(212, 168, 67, 0.15)',
+          DEFAULT: '#C9A227',
+          dim: 'rgba(201, 162, 39, 0.1)',
         },
         teal: {
           DEFAULT: '#D4A843',
@@ -29,12 +29,12 @@ const config: Config = {
           dim: 'rgba(212, 168, 67, 0.15)',
         },
         yes: {
-          DEFAULT: '#22A06B',
-          dim: 'rgba(34, 160, 107, 0.18)',
+          DEFAULT: '#1D8F5C',
+          dim: 'rgba(29, 143, 92, 0.14)',
         },
         no: {
-          DEFAULT: '#E05252',
-          dim: 'rgba(224, 82, 82, 0.18)',
+          DEFAULT: '#C94444',
+          dim: 'rgba(201, 68, 68, 0.14)',
         },
       },
       fontFamily: {
@@ -49,8 +49,9 @@ const config: Config = {
         xl: '24px',
       },
       boxShadow: {
-        glow: '0 8px 32px -8px rgba(196, 30, 58, 0.35)',
-        'glow-gold': '0 8px 32px -8px rgba(212, 168, 67, 0.3)',
+        glow: '0 12px 40px -12px rgba(0, 0, 0, 0.6)',
+        'glow-gold': '0 8px 32px -10px rgba(201, 162, 39, 0.15)',
+        premium: '0 1px 0 rgba(255,255,255,0.04) inset, 0 24px 48px -24px rgba(0,0,0,0.5)',
       },
       animation: {
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
